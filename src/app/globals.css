@@ -206,6 +206,25 @@
   }
 }
 
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -235,6 +254,20 @@
   }
 }
 
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes stars-animation {
+  from {background-position: 0 0;}
+  to {background-position: 0 10000px;}
+}
+
 /* Custom Utility Classes */
 .neo-border {
   @apply border-2 border-black dark:border-white;
@@ -258,6 +291,10 @@
 
 .animate-wiggle {
   animation: wiggle 1s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
 }
 
 /* Glass Morphism */

@@ -1,15 +1,40 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, MessageSquare, Sparkles, Star, PlusCircle, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { signIn, signUp } from "@/lib/auth";
 
 export default function Dashboard() {
   const heroRef = useRef<HTMLDivElement>(null);
   const charactersRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const login=async(email:string,password:string)=>{
+    const {data,error}=await signIn.email({
+      email,
+      password,
+      // callbackURL: "/dashboard",
+      rememberMe: false
+    }, {
+      //callbacks
+    })
+
+    if (error) {
+      console.error("Login error:", error);
+      return;
+    }
+    if (data) {
+      console.log("Login successful:", data);
+    }
+    return data;
+  }
+  // useEffect(() => {
+  //   const response=login("sohamhaldar25@gmail.com", "Soham@123*");
+  //   console.log("Login response:", response);
+  // }, []);
+  
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
