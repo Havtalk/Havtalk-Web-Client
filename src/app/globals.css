@@ -268,6 +268,27 @@
   to {background-position: 0 10000px;}
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Add this animation for smooth message appearance */
+@keyframes messageAppear {
+  from {
+    opacity: 0.5;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Custom Utility Classes */
 .neo-border {
   @apply border-2 border-black dark:border-white;
@@ -295,6 +316,14 @@
 
 .animate-shimmer {
   animation: shimmer 2s infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.animate-message-appear {
+  animation: messageAppear 0.3s ease-out forwards;
 }
 
 /* Glass Morphism */
@@ -327,14 +356,8 @@
     transform: none !important;
     margin-top: 2rem;
   }
+}
 
-  /* Fix spacing and alignment */
-  h1 {
-    font-size: 2.5rem !important;
-    line-height: 1.2 !important;
-  }
-
-  p {
-    font-size: 1rem !important;
-  }
+.shadow-glow {
+  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.5);
 }

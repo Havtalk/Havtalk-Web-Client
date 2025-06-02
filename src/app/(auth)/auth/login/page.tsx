@@ -1,4 +1,4 @@
-import LoginForm from '@/components/login-form';
+import LoginForm from '@/components/auth/login-form';
 import React from 'react'
 import { Sparkles } from 'lucide-react';
 import Image from 'next/image';

@@ -1,5 +1,5 @@
 // 'use client'
-import RegisterForm from '@/components/register-form';
+import RegisterForm from '@/components/auth/register-form';
 import React from 'react'
 import { Sparkles } from 'lucide-react';
 import Image from 'next/image';
