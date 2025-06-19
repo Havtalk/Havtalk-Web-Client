@@ -3,7 +3,6 @@ import RegisterForm from '@/components/auth/register-form';
 import React from 'react'
 import { Sparkles } from 'lucide-react';
 import Image from 'next/image';
-import { signIn, signUp } from '@/lib/auth';
 
 function RegisterPage() {
   return (
@@ -32,10 +31,10 @@ function RegisterPage() {
         ))}
 
         {/* Animated gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/30 rounded-full blur-3xl animate-pulse-slow opacity-30"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-secondary/30 rounded-full blur-3xl animate-pulse opacity-30"></div>
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-hero-primary/30 rounded-full blur-3xl animate-pulse-slow opacity-30"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-hero-secondary/30 rounded-full blur-3xl animate-pulse opacity-30"></div>
         <div className="absolute -top-16 -right-16 w-80 h-80 bg-primary/30 rounded-full blur-3xl animate-pulse-slow opacity-50"></div>
-        <div className="absolute -bottom-16 -left-16 w-80 h-80 bg-secondary/30 rounded-full blur-3xl animate-pulse-slow opacity-30"></div>
+        <div className="absolute -bottom-16 -left-16 w-80 h-80 bg-hero-secondary/30 rounded-full blur-3xl animate-pulse-slow opacity-30"></div>
       </div>
       
       {/* Left side image - hidden on small screens */}
@@ -49,11 +48,11 @@ function RegisterPage() {
 
       <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-xl px-4 py-6 mx-auto text-center text-white">
         <div className="flex items-center gap-2 mb-3">
-          <div className="h-px w-12 bg-gradient-to-r from-transparent to-primary/70"></div>
-          <Sparkles className="h-5 w-5 text-primary animate-pulse" />
-          <div className="h-px w-12 bg-gradient-to-r from-primary/70 to-transparent"></div>
+          <div className="h-px w-12 bg-gradient-to-r from-transparent to-hero-primary/70"></div>
+          <Sparkles className="h-5 w-5 text-hero-primary animate-pulse" />
+          <div className="h-px w-12 bg-gradient-to-r from-hero-primary/70 to-transparent"></div>
         </div>
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-primary/80 to-white bg-clip-text text-transparent animate-gradient">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-hero-primary/80 to-white bg-clip-text text-transparent animate-gradient">
           Create Your Universe
         </h1>
         <p className="mt-4 text-base md:text-lg text-gray-300 max-w-lg mx-auto leading-relaxed">
@@ -63,7 +62,7 @@ function RegisterPage() {
         <RegisterForm />
         
         {/* Bottom decorative element */}
-        <div className="absolute bottom-1 inset-x-0 h-px bg-gradient-to-r from-transparent via-secondary/50 to-transparent"></div>
+        <div className="absolute bottom-1 inset-x-0 h-px bg-gradient-to-r from-transparent via-hero-secondary/50 to-transparent"></div>
       </div> 
 
       {/* Right side image - hidden on small screens */}

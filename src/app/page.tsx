@@ -1,39 +1,20 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ChatDemo } from "@/components/chat-demo";
 import { CTA } from "@/components/cta";
 import { EasterEgg } from "@/components/easter-egg";
-import { FAQ } from "@/components/faq";
 import { Features } from "@/components/features";
 import { Footer } from "@/components/footer";
-import { Header } from "@/components/header";
+import { Header } from "@/components/landing-header";
 import { Hero } from "@/components/hero";
 import { Pricing } from "@/components/pricing";
-import { Testimonials } from "@/components/testimonials";
-import { CustomCursor } from "@/components/custom-cursor";
-
 export default function Home() {
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    // Check if on mobile/touch device
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
-    };
-    
-    checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
-    
-    return () => {
-      window.removeEventListener('resize', checkIfMobile);
-    };
-  }, []);
   
   return (
-    <div className={!isMobile ? "custom-cursor" : ""}>
+    <div>
       {/* Custom cursor */}
-      <CustomCursor />
+      {/* <CustomCursor /> */}
       
       {/* Header */}
       <Header />

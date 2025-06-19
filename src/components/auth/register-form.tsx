@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState} from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -14,29 +14,30 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Loader2, Lock, Mail, User, UserCircle, Sparkles, Star } from 'lucide-react'
-import Image from 'next/image'
-import { signUp } from '@/lib/auth';
-import {ErrorContext} from 'better-auth/react';
+import { Loader2, Lock, Mail, User, UserCircle, Star } from 'lucide-react'
+import { signIn, signUp } from '@/lib/auth';
 
 // Define form schema using zod
 const formSchema = z.object({
-    name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-    username: z.string().min(3, { message: 'Username must be at least 3 characters' })
-        .regex(/^[a-z0-9_]+$/, { message: 'Username can only contain lowercase letters, numbers, and underscores' }),
-    email: z.string().email({ message: 'Please enter a valid email address' }),
-    password: z.string().min(6, { message: 'Password must be at least 6 characters' })
-        .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/, { 
-            message: 'Password must contain at least one letter and one number' 
-        }).max(20, { message: 'Password must be at most 20 characters' }),
-    confirmPassword: z.string().min(6, { message: 'Please confirm your password' })
+  name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
+  username: z.string().min(3, { message: 'Username must be at least 3 characters' })
+    .regex(/^[a-z0-9_]+$/, { message: 'Username can only contain lowercase letters, numbers, and underscores' }),
+  email: z.string().email({ message: 'Please enter a valid email address' }),
+  password: z.string().min(6, { message: 'Password must be at least 6 characters' })
+    .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/, { 
+      message: 'Password must contain at least one letter, one number, and one special character' 
+    }).max(20, { message: 'Password must be at most 20 characters' }),
+  confirmPassword: z.string().min(6, { message: 'Please confirm your password' })
 })
+.refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
 
 type FormValues = z.infer<typeof formSchema>
 
 function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -47,23 +48,6 @@ function RegisterForm() {
       password: '',
     },
   })
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (window.innerWidth < 768) return;
-      
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-      
-      setMousePosition({
-        x: (clientX / innerWidth) * 2 - 1,
-        y: (clientY / innerHeight) * 2 - 1,
-      });
-    };
-    
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true)
@@ -162,6 +146,40 @@ function RegisterForm() {
           </h2>
           <p className="text-gray-300 mt-1 text-sm sm:text-base">Join our community of explorers</p>
         </div>
+        <div className="mb-4 sm:mb-5">
+          <Button 
+            type="button" 
+            variant="outline"
+            onClick={() => signIn.social({
+              provider: 'google',
+              callbackURL:'http://localhost:3000/dashboard',
+            })} 
+            className="w-full flex items-center justify-center gap-2 bg-gray-800/50 text-white border border-gray-700/50 
+            py-2 rounded-lg transition-all duration-300 hover:bg-gray-700/50 hover:border-gray-600/50 
+            h-9 sm:h-10 relative overflow-hidden group"
+          >
+            
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
+            {/* <Image 
+              src="/google-logo.svg" 
+              alt="Google" 
+              width={18} 
+              height={18} 
+              className="w-4 h-4 sm:w-[18px] sm:h-[18px]" 
+            /> */}
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="15" height="18" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path><path fill="none" d="M0 0h48v48H0z"></path></svg>
+            <span className="text-sm sm:text-base">Continue with Google</span>
+          </Button>
+          
+          <div className="relative my-4 sm:my-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-700/50"></div>
+            </div>
+            <div className="relative flex justify-center text-xs sm:text-sm">
+              <span className="px-2 bg-gray-900/80 text-gray-400">or continue with email</span>
+            </div>
+          </div>
+        </div>
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="relative space-y-4 sm:space-y-5">
@@ -253,7 +271,7 @@ function RegisterForm() {
                     />
                   </FormControl>
                   <FormDescription className="text-xs text-gray-400">
-                    Minimum 8 characters with uppercase, lowercase & number
+                    Minimum 6 characters with at least one letter, one number, and one special character.
                   </FormDescription>
                   <FormMessage className="text-red-400 text-xs sm:text-sm" />
                 </FormItem>

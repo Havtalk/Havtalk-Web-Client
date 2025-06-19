@@ -21,7 +21,7 @@ export function CTA() {
       const moveX = (e.clientX - centerX) / 20;
       const moveY = (e.clientY - centerY) / 20;
       
-      elements.forEach((el, i) => {
+      elements.forEach((el) => {
         const depth = parseFloat((el as HTMLElement).dataset.depth || "1");
         const element = el as HTMLElement;
         element.style.transform = `translate(${moveX * depth}px, ${moveY * depth}px)`;

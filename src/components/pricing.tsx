@@ -78,13 +78,7 @@ export function Pricing() {
       cta: "Contact Us",
     },
   ];
-  
-  // Calculate the yearly savings percentage
-  const calculateSavings = (monthly: number, yearly: number) => {
-    const monthlyCost = monthly * 12;
-    const savings = monthlyCost - yearly;
-    return Math.round((savings / monthlyCost) * 100);
-  };
+
 
   return (
     <section id="pricing" className="relative py-24">
@@ -229,7 +223,7 @@ export function Pricing() {
             <div>
               <h4 className="text-center font-display text-lg font-bold sm:text-left">14-Day Money-Back Guarantee</h4>
               <p className="text-center text-sm text-foreground/70 sm:text-left">
-                Try our AI roleplay platform risk-free. If you're not completely satisfied with your character interactions, we'll refund your payment within 14 days.
+                Try our AI roleplay platform risk-free. If you&apos;re not completely satisfied with your character interactions, we&apos;ll refund your payment within 14 days.
                 No questions asked.
               </p>
             </div>

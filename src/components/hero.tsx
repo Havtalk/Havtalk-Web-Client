@@ -1,41 +1,41 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, {useRef} from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, MessageSquare, Sparkles, Star } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import Image from "next/image";
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const charactersRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!heroRef.current || !charactersRef.current) return;
-      if (window.innerWidth < 768) return;
+  // useEffect(() => {
+  //   const handleMouseMove = (e: MouseEvent) => {
+  //     if (!heroRef.current || !charactersRef.current) return;
+  //     if (window.innerWidth < 768) return;
 
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
+  //     const { clientX, clientY } = e;
+  //     const { innerWidth, innerHeight } = window;
 
-      setMousePosition({
-        x: (clientX / innerWidth) * 2 - 1,
-        y: (clientY / innerHeight) * 2 - 1,
-      });
+  //     setMousePosition({
+  //       x: (clientX / innerWidth) * 2 - 1,
+  //       y: (clientY / innerHeight) * 2 - 1,
+  //     });
 
-      const characters = charactersRef.current.children;
-      for (let i = 0; i < characters.length; i++) {
-        const character = characters[i] as HTMLElement;
-        const speed = parseFloat(character.dataset.speed || "0.15");
-        const offsetX = mousePosition.x * speed * 20;
-        const offsetY = mousePosition.y * speed * 20;
-        character.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-      }
-    };
+  //     const characters = charactersRef.current.children;
+  //     for (let i = 0; i < characters.length; i++) {
+  //       const character = characters[i] as HTMLElement;
+  //       const speed = parseFloat(character.dataset.speed || "0.15");
+  //       const offsetX = mousePosition.x * speed * 20;
+  //       const offsetY = mousePosition.y * speed * 20;
+  //       character.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+  //     }
+  //   };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mousePosition]);
+  //   window.addEventListener("mousemove", handleMouseMove);
+  //   return () => window.removeEventListener("mousemove", handleMouseMove);
+  // }, [mousePosition]);
 
   return (
     <section
@@ -43,16 +43,16 @@ export function Hero() {
       className="relative overflow-hidden pt-16 pb-16 md:pt-20 md:pb-20 h-auto min-h-[100vh] md:min-h-[100vh] flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black"
     >
       {/* Enhanced background elements */}
-      <div className="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-primary/20 blur-3xl"></div>
-      <div className="absolute -right-24 top-1/3 h-96 w-96 rounded-full bg-secondary/20 blur-3xl"></div>
-      <div className="absolute bottom-12 right-12 h-64 w-64 rounded-full bg-accent/20 blur-3xl"></div>
+      <div className="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-hero-primary/20 blur-3xl"></div>
+      <div className="absolute -right-24 top-1/3 h-96 w-96 rounded-full bg-hero-secondary/20 blur-3xl"></div>
+      <div className="absolute bottom-12 right-12 h-64 w-64 rounded-full bg-hero-accent/20 blur-3xl"></div>
       <div className="absolute left-1/4 bottom-1/4 h-48 w-48 rounded-full bg-primary/10 blur-2xl"></div>
 
       {/* Parallax background */}
       {/* <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/background.jpg')" }}></div> */}
 
       {/* Characters */}
-      <div ref={charactersRef} className="absolute inset-0 pointer-events-none z-0">
+      <div ref={charactersRef} className="absolute inset-0  z-0">
         {/* Character 1 - Left Side - Now hidden on medium screens where content would overlap */}
         <div
           className="absolute hidden xl:block lg:top-1/2 lg:left-[10%] transition-transform duration-300 ease-out lg:-translate-y-1/2"
@@ -101,7 +101,7 @@ export function Hero() {
         <div className="max-w-3xl text-center px-4">
           <h1 className=" font-display text-3xl font-black tracking-tight sm:text-5xl md:text-6xl relative inline-block">
             <span className="block ">Immersive AI</span>
-            <span className=" bg-black/30 mt-2 block bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-gradient">
+            <span className=" bg-black/30 mt-2 block bg-gradient-to-r from-hero-primary via-hero-secondary to-hero-accent bg-clip-text text-transparent animate-gradient">
               Roleplay Experience
             </span>
             <div className="absolute -top-6 -right-6 text-4xl">✨</div>
@@ -109,7 +109,7 @@ export function Hero() {
 
           <p className=" mt-6 font-body text-lg md:text-xl text-foreground/80 leading-relaxed max-w-2xl mx-auto text-shadow-sm">
             Create meaningful connections with AI characters in rich, dynamic conversations. Explore endless storylines and build relationships with characters that{" "}
-            <span className="text-primary font-semibold">feel real</span> and respond naturally.
+            <span className="text-hero-primary font-semibold">feel real</span> and respond naturally.
           </p>
 
           <div className="mt-8 md:mt-10 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
@@ -178,7 +178,7 @@ export function Hero() {
           <div className="container flex justify-between items-end px-4 pb-6 md:pb-8">
             {/* Left Character Card */}
             <div className="relative w-32 h-32 md:w-48 md:h-48 transform transition-all duration-300 hover:scale-105">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-primary/20 to-transparent blur-md"></div>
+              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-hero-primary/20 to-transparent blur-md"></div>
               <Image
                 src="/spacecaptain-3d.png"
                 alt="Space Captain Character"
@@ -192,13 +192,13 @@ export function Hero() {
             
             {/* Center Decoration */}
             <div className="hidden md:block absolute left-1/2 bottom-8 transform -translate-x-1/2">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-primary via-secondary to-accent blur-md opacity-60 animate-pulse"></div>
+              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-hero-primary via-hero-secondary to-hero-accent blur-md opacity-60 animate-pulse"></div>
               <div className="absolute inset-0 flex items-center justify-center">
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
             </div>
             <div className="block md:hidden absolute left-1/2 bottom-8  -translate-x-1/2 w-32 h-32 md:w-48 md:h-48 transform transition-all duration-300 hover:scale-105">
-              {/* <div className="w-16 h-16 rounded-full bg-gradient-to-r from-primary via-secondary to-accent blur-md opacity-60 animate-pulse"></div>
+              {/* <div className="w-16 h-16 rounded-full bg-gradient-to-r from-hero-primary via-hero-secondary to-hero-accent blur-md opacity-60 animate-pulse"></div>
               <div className="absolute inset-0 flex items-center justify-center">
                 <Sparkles className="h-6 w-6 text-white" />
               </div> */}
@@ -215,7 +215,7 @@ export function Hero() {
             
             {/* Right Character Card */}
             <div className="relative w-32 h-32 md:w-48 md:h-48 transform transition-all duration-300 hover:scale-105">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-secondary/20 to-transparent blur-md"></div>
+              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-hero-secondary/20 to-transparent blur-md"></div>
               <Image
                 src="/detective-3d.png"
                 alt="Detective Character"
@@ -230,8 +230,8 @@ export function Hero() {
         </div>
 
         {/* Enhanced Light Trails */}
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-primary via-secondary to-accent opacity-60 animate-pulse"></div>
-        <div className="absolute inset-x-0 bottom-1 h-px bg-gradient-to-r from-accent via-primary to-secondary opacity-40 animate-pulse-slow"></div>
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-hero-primary via-hero-secondary to-hero-accent opacity-60 animate-pulse"></div>
+        <div className="absolute inset-x-0 bottom-1 h-px bg-gradient-to-r from-hero-accent via-hero-primary to-hero-secondary opacity-40 animate-pulse-slow"></div>
       </div>
     </section>
   );

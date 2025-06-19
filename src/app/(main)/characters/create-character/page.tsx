@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, ChangeEvent, FormEvent } from "react";
+import React,{ useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,9 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
-// import { useToast } from "@/components/ui/use-toast";
+import { base64ToFile } from "@/lib/utils";
+import api from "@/lib/axiosInstance";
+import BackgroundDesign from "@/components/background-design";
 
 interface CharacterFormData {
   name: string;
@@ -28,31 +31,227 @@ interface CharacterFormData {
   tone: string;
   speechStyle: string;
   exampleDialogues: string;
+  isPublic: boolean; 
 }
+
+interface AvatarTemplate {
+  name: string;
+  prompt: string;
+}
+
+interface AvatarInputProps {
+  avatarInput: "url" | "generate" | "file";
+  setAvatarInput: (input: "url" | "generate" | "file") => void;
+  urlAvatar: string;
+  setUrlAvatar: React.Dispatch<React.SetStateAction<string>>;
+  generatedAvatar: string;
+  setGeneratedAvatar: React.Dispatch<React.SetStateAction<string>>;
+  imageFile: File | null;
+  setImageFile: (file: File | null) => void;
+  generationPrompt: string;
+  setGenerationPrompt: (prompt: string) => void;
+  isGeneratingAvatar: boolean;
+  generateAvatar: () => Promise<void>;
+  generationError: string | null;
+  avatarTemplates: AvatarTemplate[];
+  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  setCharacter: React.Dispatch<React.SetStateAction<CharacterFormData>>;
+}
+
+const AvatarInput = React.memo(({
+  avatarInput, setAvatarInput,
+  urlAvatar,
+  generatedAvatar,
+  imageFile, setImageFile,
+  generationPrompt, setGenerationPrompt,
+  isGeneratingAvatar, generateAvatar,
+  generationError, avatarTemplates, handleChange,
+  setCharacter
+}: AvatarInputProps) => (
+  <div className="space-y-3">
+    <Label htmlFor="avatarType">Avatar</Label>
+    <RadioGroup 
+      id="avatarType" 
+      value={avatarInput} 
+      onValueChange={(value) => {
+        setAvatarInput(value as "url" | "generate" | "file");
+        if (value === "url") {
+            setCharacter((prev: CharacterFormData) => ({ ...prev, avatar: urlAvatar }));
+          setImageFile(null);
+        } else if (value === "generate") {
+            setCharacter((prev: CharacterFormData) => ({ ...prev, avatar: generatedAvatar }));
+          setImageFile(null);
+        }
+      }}
+      className="flex space-x-4 flex-wrap"
+    >
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="url" id="url" />
+        <Label htmlFor="url" className="cursor-pointer">Enter URL</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="generate" id="generate" />
+        <Label htmlFor="generate" className="cursor-pointer">Generate with AI</Label>
+      </div>
+      <div className="flex items-center space-x-2">
+        <RadioGroupItem value="file" id="file" />
+        <Label htmlFor="file" className="cursor-pointer">Upload File</Label>
+      </div>
+    </RadioGroup>
+
+    <div className="min-h-[250px]">
+      {avatarInput === "url" ? (
+        <div className="space-y-2">
+          <Input
+            id="avatar"
+            name="avatar"
+            type="text"
+            value={urlAvatar}
+            onChange={handleChange}
+            placeholder="https://example.com/avatar.png"
+          />
+          
+          {/* Show image preview if URL exists */}
+          {urlAvatar && (
+            <div className="mt-4">
+              <div className="relative w-full aspect-square max-w-[150px] mx-auto">
+                <Image
+                  src={urlAvatar}
+                  alt="Character avatar"
+                  className="rounded-md object-cover border"
+                  fill
+                  unoptimized
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      ) : avatarInput === "file" ? (
+        <div className="space-y-2">
+          <Input
+            id="avatarFile"
+            name="avatarFile"
+            type="file"
+            accept="image/*"
+            onChange={handleChange}
+          />
+          {imageFile && (
+            <div className="mt-4">
+              <div className="relative w-full aspect-square max-w-[150px] mx-auto">
+                <Image
+                  src={URL.createObjectURL(imageFile)}
+                  alt="Character avatar"
+                  className="rounded-md object-cover border"
+                  fill
+                  unoptimized
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-3 p-3 border rounded-md">
+          <div className="flex flex-wrap gap-2 mb-2">
+            {avatarTemplates.map((template: AvatarTemplate, idx: number) => (
+              <Button
+              key={idx}
+              size="sm"
+              variant="outline"
+              type="button"
+              onClick={() => setGenerationPrompt(template.prompt)}
+              className="text-xs"
+              >
+              {template.name}
+              </Button>
+            ))}
+          </div>
+          
+          <Textarea
+            value={generationPrompt}
+            onChange={(e) => {
+              const target = e.target;
+              const selectionStart = target.selectionStart;
+              const selectionEnd = target.selectionEnd;
+              
+              setGenerationPrompt(e.target.value);
+              
+              // Use setTimeout to restore cursor position after state update and re-render
+              setTimeout(() => {
+                if (document.activeElement === target) {
+                  target.selectionStart = selectionStart;
+                  target.selectionEnd = selectionEnd;
+                }
+              }, 0);
+            }}
+            placeholder="Describe your character's appearance"
+            className="resize-none text-sm"
+            rows={2}
+          />
+          
+          <Button
+            type="button"
+            onClick={generateAvatar}
+            disabled={isGeneratingAvatar}
+            className="w-full"
+            size="sm"
+          >
+            {isGeneratingAvatar ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              "Generate Avatar"
+            )}
+          </Button>
+          
+          {generationError && (
+            <p className="text-xs text-red-500">{generationError}</p>
+          )}
+          
+          {generatedAvatar && (
+            <div className="mt-2">
+              <div className="relative w-full aspect-square max-w-[150px] mx-auto">
+                <Image
+                  src={generatedAvatar}
+                  alt="Character avatar"
+                  className="rounded-md object-cover border"
+                  fill
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+));
+
+// Add display name to satisfy the ESLint rule
+AvatarInput.displayName = 'AvatarInput';
 
 export default function CreateCharacterPage() {
   const router = useRouter();
-//   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"basic" | "advanced">("basic");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Avatar generation state
-  const [avatarInput, setAvatarInput] = useState<"url" | "generate">("url");
+  const [avatarInput, setAvatarInput] = useState<"url" | "generate" | "file">("url");
   const [isGeneratingAvatar, setIsGeneratingAvatar] = useState(false);
   const [generationPrompt, setGenerationPrompt] = useState("A portrait of a character with detailed features, high quality");
   const [generationError, setGenerationError] = useState<string | null>(null);
   
-  // Separate avatar states
   const [urlAvatar, setUrlAvatar] = useState("");
   const [generatedAvatar, setGeneratedAvatar] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   
-  // Form state
   const [character, setCharacter] = useState<CharacterFormData>({
     name: "",
     personality: "",
     description: "",
     avatar: "",
-    // Advanced fields
     environment: "",
     additionalInfo: "",
     tags: "",
@@ -62,16 +261,27 @@ export default function CreateCharacterPage() {
     quirks: "",
     tone: "",
     speechStyle: "",
-    exampleDialogues: "[]"
+    exampleDialogues: "[]",
+    isPublic: false 
   });
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    if (name === "avatar") {
+    const { name, value, type } = e.target as HTMLInputElement;
+    if (type === "file" && name === "avatarFile") {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        setImageFile(file);
+        setUrlAvatar(""); 
+        setCharacter(prev => ({ ...prev, avatar: URL.createObjectURL(file) }));
+      }
+    } else if (name === "avatar") {
       setUrlAvatar(value);
+      setImageFile(null); 
       setCharacter(prev => ({ ...prev, [name]: value }));
+    } else if (name === "isPublic") {
+      setCharacter(prev => ({ ...prev, isPublic: (e.target as HTMLInputElement).checked }));
     } else {
       setCharacter(prev => ({ ...prev, [name]: value }));
     }
@@ -82,28 +292,63 @@ export default function CreateCharacterPage() {
     setIsSubmitting(true);
 
     try {
-      // Prepare data for API - use the appropriate avatar based on input type
-      const avatarToUse = avatarInput === "url" ? urlAvatar : generatedAvatar;
-      
-      const formData = {
-        ...character,
-        avatar: avatarToUse,
-        tags: character.tags ? character.tags.split(",").map(tag => tag.trim()) : [],
-        exampleDialogues: character.exampleDialogues ? JSON.parse(character.exampleDialogues) : null
-      };
+      const formDataToSend = new FormData();
 
-      // Call your API endpoint
-      const response = await fetch("/api/characters", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      formDataToSend.append("name", character.name);
+      formDataToSend.append("personality", character.personality);
+      formDataToSend.append("description", character.description);
+      formDataToSend.append("environment", character.environment);
+      formDataToSend.append("additionalInfo", character.additionalInfo);
+      formDataToSend.append("backstory", character.backstory);
+      formDataToSend.append("role", character.role);
+      formDataToSend.append("goals", character.goals);
+      formDataToSend.append("quirks", character.quirks);
+      formDataToSend.append("tone", character.tone);
+      formDataToSend.append("speechStyle", character.speechStyle);
+      formDataToSend.append("tags", character.tags ? character.tags : "");
+      formDataToSend.append("isPublic", character.isPublic ? "true" : "false");
+      // Only append exampleDialogues if present and valid
+      if (character.exampleDialogues && character.exampleDialogues.trim() !== "") {
+        let exampleDialoguesValue = character.exampleDialogues;
+        try {
+          const parsed = JSON.parse(character.exampleDialogues);
+          if (Array.isArray(parsed)) {
+            exampleDialoguesValue = JSON.stringify(parsed);
+          } else {
+            exampleDialoguesValue = "[]";
+          }
+        } catch {
+          exampleDialoguesValue = "[]";
+        }
+        formDataToSend.append("exampleDialogues", exampleDialoguesValue);
+      }
 
-      if (!response.ok) {
+      if (avatarInput === "url" && urlAvatar) {
+        formDataToSend.append("avatarUrl", urlAvatar);
+      } else if ((avatarInput === "generate" && generatedAvatar) || imageFile) {
+        // If generatedAvatar is a base64 string, convert to File
+        if (generatedAvatar && !imageFile) {
+          const fileName = `avatar-${Date.now()}.png`;
+          const avatarFile = base64ToFile(generatedAvatar, fileName);
+          formDataToSend.append("avatar", avatarFile);
+        } else if (imageFile) {
+          formDataToSend.append("avatar", imageFile);
+        }
+      }
+
+      const response = await api.post(
+        `/character`,
+        formDataToSend,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        }
+      );
+
+      if (response.status !== 201) {
         throw new Error("Failed to create character");
       }
 
-      // Redirect to characters page
       router.push("/characters");
     } catch (error) {
       console.error("Error creating character:", error instanceof Error ? error.message : String(error));
@@ -123,23 +368,16 @@ export default function CreateCharacterPage() {
       setIsGeneratingAvatar(true);
       setGenerationError(null);
       
-      const response = await fetch("/api/generate-image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prompt: generationPrompt,
-        }),
+      const response = await api.post("/avatar/generate", {
+        prompt: generationPrompt,  
       });
 
-      if (!response.ok) {
+      if (response.status!=201) {
         throw new Error(`Failed to generate image: ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const data = await response.data;
       if (data.success && data.result) {
-        // Update the generated avatar state
         setGeneratedAvatar(data.result.image);
         setCharacter(prev => ({
           ...prev,
@@ -171,128 +409,10 @@ export default function CreateCharacterPage() {
     }
   ];
 
-  // Component for avatar input (used in both basic and advanced tabs)
-  const AvatarInput = () => (
-    <div className="space-y-3">
-      <Label htmlFor="avatarType">Avatar</Label>
-      <RadioGroup 
-        id="avatarType" 
-        value={avatarInput} 
-        onValueChange={(value) => {
-          setAvatarInput(value as "url" | "generate");
-          // Update character.avatar based on the selected type
-          const newAvatarValue = value === "url" ? urlAvatar : generatedAvatar;
-          setCharacter(prev => ({ ...prev, avatar: newAvatarValue }));
-        }}
-        className="flex space-x-4"
-      >
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="url" id="url" />
-          <Label htmlFor="url" className="cursor-pointer">Enter URL</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="generate" id="generate" />
-          <Label htmlFor="generate" className="cursor-pointer">Generate with AI</Label>
-        </div>
-      </RadioGroup>
-
-      <div className="min-h-[250px]">
-        {avatarInput === "url" ? (
-          <div className="space-y-2">
-            <Input
-              id="avatar"
-              name="avatar"
-              type="text"
-              value={urlAvatar}
-              onChange={handleChange}
-              placeholder="https://example.com/avatar.png"
-            />
-            
-            {/* Show image preview if URL exists */}
-            {urlAvatar && (
-              <div className="mt-4">
-                <div className="relative w-full aspect-square max-w-[150px] mx-auto">
-                  <Image
-                    src={urlAvatar}
-                    alt="Character avatar"
-                    className="rounded-md object-cover border"
-                    fill
-                    unoptimized
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="space-y-3 p-3 border rounded-md">
-            <div className="flex flex-wrap gap-2 mb-2">
-              {avatarTemplates.map((template, idx) => (
-                <Button
-                  key={idx}
-                  size="sm"
-                  variant="outline"
-                  type="button"
-                  onClick={() => setGenerationPrompt(template.prompt)}
-                  className="text-xs"
-                >
-                  {template.name}
-                </Button>
-              ))}
-            </div>
-            
-            <Textarea
-              value={generationPrompt}
-              onChange={(e) => setGenerationPrompt(e.target.value)}
-              placeholder="Describe your character's appearance"
-              className="resize-none text-sm"
-              rows={2}
-            />
-            
-            <Button
-              type="button"
-              onClick={generateAvatar}
-              disabled={isGeneratingAvatar}
-              className="w-full"
-              size="sm"
-            >
-              {isGeneratingAvatar ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                "Generate Avatar"
-              )}
-            </Button>
-            
-            {generationError && (
-              <p className="text-xs text-red-500">{generationError}</p>
-            )}
-            
-            {generatedAvatar && (
-              <div className="mt-2">
-                <div className="relative w-full aspect-square max-w-[150px] mx-auto">
-                  <Image
-                    src={generatedAvatar}
-                    alt="Character avatar"
-                    className="rounded-md object-cover border"
-                    fill
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="h-full w-full flex justify-center py-10 overflow-y-auto px-2">
-      <Card className="border-none shadow-md w-full max-w-4xl min-h-fit">
+  return (<><BackgroundDesign/>
+    <div className="h-full w-full flex justify-center py-10 overflow-y-auto px-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-thumb-gray-800">
+      
+      <Card className="border-none shadow-md w-full max-w-4xl min-h-fit backdrop-blur-sm bg-white/10">
         <CardHeader>
           <CardTitle className="text-3xl">Create a New Character</CardTitle>
         </CardHeader>
@@ -300,8 +420,8 @@ export default function CreateCharacterPage() {
         <CardContent className="flex-1">
           <form onSubmit={handleSubmit} className="space-y-8">
             <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "basic" | "advanced")}>
-              <div className="flex justify-end mb-6">
-                <TabsList>
+              <div className="flex justify-end mb-6 ">
+                <TabsList className="bg-transparent border-b-0">
                   <TabsTrigger value="basic">Basic</TabsTrigger>
                   <TabsTrigger value="advanced">Advanced</TabsTrigger>
                 </TabsList>
@@ -355,10 +475,55 @@ export default function CreateCharacterPage() {
                         className="resize-none"
                       />
                     </div>
-                  </div>
 
+                    <div className="space-y-2">
+                      <Label htmlFor="tags">Tags (comma-separated)</Label>
+                      <Input
+                        id="tags"
+                        name="tags"
+                        value={character.tags}
+                        onChange={handleChange}
+                        placeholder="fantasy, sci-fi, historical, etc."
+                      />
+                    </div>
+
+                    {/* isPublic toggle */}
+                    <div className="flex items-center space-x-3 pt-2">
+                      <Switch
+                        id="isPublic"
+                        name="isPublic"
+                        checked={character.isPublic}
+                        onCheckedChange={(checked) =>
+                          setCharacter((prev) => ({ ...prev, isPublic: checked }))
+                        }
+                      />
+                      <Label htmlFor="isPublic" className="mb-0">
+                        Make Character Public
+                      </Label>
+                    </div>
+                    <p className="text-xs text-muted-foreground pl-6">
+                      Note: Public characters require admin approval before being visible to other users.
+                    </p>
+                  </div>
                   <div className="space-y-4">
-                    <AvatarInput />
+                    <AvatarInput
+                      avatarInput={avatarInput}
+                      setAvatarInput={setAvatarInput}
+                      urlAvatar={urlAvatar}
+                      setUrlAvatar={setUrlAvatar}
+                      generatedAvatar={generatedAvatar}
+                      setGeneratedAvatar={setGeneratedAvatar}
+                      imageFile={imageFile}
+                      setImageFile={setImageFile}
+                      generationPrompt={generationPrompt}
+                      setGenerationPrompt={setGenerationPrompt}
+                      isGeneratingAvatar={isGeneratingAvatar}
+                      generateAvatar={generateAvatar}
+                      generationError={generationError}
+                      avatarTemplates={avatarTemplates}
+                      handleChange={handleChange}
+                      setCharacter={setCharacter}
+                    />
                   </div>
                 </div>
               </TabsContent>
@@ -415,10 +580,44 @@ export default function CreateCharacterPage() {
                             className="resize-none"
                           />
                         </div>
+
+                        <div className="flex items-center space-x-3 pt-2">
+                          <Switch
+                            id="advanced-isPublic"
+                            name="isPublic"
+                            checked={character.isPublic}
+                            onCheckedChange={(checked) =>
+                              setCharacter((prev) => ({ ...prev, isPublic: checked }))
+                            }
+                          />
+                          <Label htmlFor="advanced-isPublic" className="mb-0">
+                            Make Character Public
+                          </Label>
+                        </div>
+                        <p className="text-xs text-muted-foreground pl-6">
+                          Note: Public characters require admin approval before being visible to other users.
+                        </p>
                       </div>
 
                       <div className="space-y-4">
-                        <AvatarInput />
+                        <AvatarInput
+                          avatarInput={avatarInput}
+                          setAvatarInput={setAvatarInput}
+                          urlAvatar={urlAvatar}
+                          setUrlAvatar={setUrlAvatar}
+                          generatedAvatar={generatedAvatar}
+                          setGeneratedAvatar={setGeneratedAvatar}
+                          imageFile={imageFile}
+                          setImageFile={setImageFile}
+                          generationPrompt={generationPrompt}
+                          setGenerationPrompt={setGenerationPrompt}
+                          isGeneratingAvatar={isGeneratingAvatar}
+                          generateAvatar={generateAvatar}
+                          generationError={generationError}
+                          avatarTemplates={avatarTemplates}
+                          handleChange={handleChange}
+                          setCharacter={setCharacter}
+                        />
                       </div>
                     </div>
                   </div>
@@ -557,7 +756,7 @@ export default function CreateCharacterPage() {
                             placeholder='[{"user": "Hello", "ai": "Hi there!"}, {"user": "How are you?", "ai": "I am doing well, thank you."}]'
                           />
                           <p className="text-xs text-muted-foreground">
-                            Enter a valid JSON array of objects with "user" and "ai" keys
+                            Enter a valid JSON array of objects with &quot;user&quot; and &quot;ai&quot; keys
                           </p>
                         </div>
                       </div>
@@ -586,5 +785,6 @@ export default function CreateCharacterPage() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

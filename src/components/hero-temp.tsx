@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, MessageSquare, Sparkles, Star } from "lucide-react";
+import { ArrowRight} from "lucide-react";
 import Image from "next/image";
 
 export function Hero() {

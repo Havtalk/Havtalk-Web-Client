@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { FastAverageColor } from 'fast-average-color';
 import ChatDescription from "@/components/chat/chat-description";
 import ChatBox from "@/components/chat/chatbox";
-import axios from "axios";
-import { BaseUrl } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
+import api from "@/lib/axiosInstance";
+import ChatSkeleton from "@/components/skeletons/chat-skeleton";
+import { useParams } from "next/navigation";
 
 // Define types for our API response
 interface Message {
@@ -39,6 +39,18 @@ interface Character {
   updatedAt: string;
 }
 
+// Define a proper interface for UserPersona
+interface UserPersona {
+  id: string;
+  name: string;
+  description: string;
+  personality: string;
+  avatar: string | null;
+  createdAt: string;
+  updatedAt: string;
+  userId: string; // Changed from string | undefined to string to match ChatDescription expectations
+}
+
 interface ChatSession {
   id: string;
   userId: string;
@@ -51,7 +63,7 @@ interface ChatSession {
   title: string | null;
   messages: Message[];
   character: Character;
-  userpersona: any | null;
+  userpersona: UserPersona | null;
 }
 
 interface ApiResponse {
@@ -59,11 +71,13 @@ interface ApiResponse {
   chat: ChatSession;
 }
 
-export default function Chat({ params }: { params: { sessionId: string }}) {
+export default function Chat() {
   const [chatSession, setChatSession] = useState<ChatSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [character, setCharacter] = useState<Character | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const params = useParams<{ sessionId: string }>();
+  // const [userPersona, setUserPersona] = useState<UserPersona | null>(null);
 
   const [showCharacterDetails, setShowCharacterDetails] = useState(false);
   const [dominantColor, setDominantColor] = useState('rgba(59, 130, 246, 0.3)'); // Default blue
@@ -72,7 +86,7 @@ export default function Chat({ params }: { params: { sessionId: string }}) {
   const fetchChatSession = async () => {
     setLoading(true);
     try {
-      const response = await axios.get<ApiResponse>(`${BaseUrl}/chatsession/${params.sessionId}`,{
+      const response = await api.get<ApiResponse>(`/chatsession/${params.sessionId}`,{
         withCredentials: true,
       });
       console.log('Chat session data:', response.data);
@@ -80,6 +94,7 @@ export default function Chat({ params }: { params: { sessionId: string }}) {
       setChatSession(response.data.chat);
       setCharacter(response.data.chat.character);
       setMessages(response.data.chat.messages);
+      // setUserPersona(response.data.chat.userpersona || null);
     }
     catch (error) {
       console.error('Error fetching chat session:', error);
@@ -129,13 +144,7 @@ export default function Chat({ params }: { params: { sessionId: string }}) {
 
   if (loading) {
     return (
-      <div className="h-[calc(100vh-4rem)] w-full flex items-center justify-center bg-slate-900">
-        <div className="flex flex-col items-center gap-4">
-          <Skeleton className="h-12 w-48 rounded-md" />
-          <Skeleton className="h-64 w-96 rounded-md" />
-          <Skeleton className="h-8 w-32 rounded-md" />
-        </div>
-      </div>
+      <ChatSkeleton/>
     );
   }
 
@@ -152,7 +161,7 @@ export default function Chat({ params }: { params: { sessionId: string }}) {
 
   return (
     <section 
-      className="relative overflow-hidden h-[calc(100vh-4rem)] flex transition-all duration-500 w-full px-0"
+      className="relative overflow-hidden h-[calc(100vh-4rem)] flex transition-all duration-500 w-full px-0 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
       style={{
         background: `linear-gradient(135deg, 
           rgba(15, 23, 42, 0.95) 0%, 
@@ -169,6 +178,8 @@ export default function Chat({ params }: { params: { sessionId: string }}) {
         dominantColor={dominantColor} 
         setShowCharacterDetails={setShowCharacterDetails} 
         showCharacterDetails={showCharacterDetails} 
+        currentPersona={chatSession?.userpersona}
+        sessionId={params.sessionId}
       />
       
       {/* Chat Interface - Right Side - Force it to take full width on mobile */}
@@ -180,6 +191,7 @@ export default function Chat({ params }: { params: { sessionId: string }}) {
         showCharacterDetails={showCharacterDetails}
         messages={messages}
         sessionId={params.sessionId}
+        currentPersona={chatSession?.userpersona}
       />
     </section>
   );

@@ -101,7 +101,7 @@ export function FAQ() {
             Frequently Asked Questions
           </h2>
           <p className="mt-4 text-lg text-foreground/70">
-            Find answers to common questions about HavTalk's features, pricing, and capabilities.
+            Find answers to common questions about HavTalk&apos;s features, pricing, and capabilities.
           </p>
         </div>
         

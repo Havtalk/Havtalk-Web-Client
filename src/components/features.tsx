@@ -22,7 +22,7 @@ interface FeatureCardProps {
   details: string[];
 }
 
-function FeatureCard({ icon, title, description, color, colorDark, details }: FeatureCardProps) {
+function FeatureCard({ icon, title, description, color, details }: FeatureCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   
   return (
@@ -244,7 +244,7 @@ export function Features() {
               </h3>
               <p className="mt-4 text-foreground/70">
                 Our AI characters provide engaging, meaningful conversations that feel natural and responsive.
-                Whether you're looking for companionship, roleplay, or just interesting discussions, our AI is here for you.
+                Whether you&apos;re looking for companionship, roleplay, or just interesting discussions, our AI is here for you.
               </p>
               
               <ul className="mt-8 space-y-4">
@@ -284,20 +284,20 @@ export function Features() {
                   <div className="flex">
                     <div className="mr-2 h-6 w-6 rounded-full bg-accent"></div>
                     <div className="max-w-[70%] rounded-lg rounded-tl-none bg-gray-800 p-2 text-xs text-white">
-                      Welcome back! I've been thinking about our last adventure. Ready to continue exploring the abandoned space station?
+                      Welcome back! I&apos;ve been thinking about our last adventure. Ready to continue exploring the abandoned space station?
                     </div>
                   </div>
                   
                   <div className="flex justify-end">
                     <div className="max-w-[70%] rounded-lg rounded-tr-none bg-primary/30 p-2 text-xs text-white">
-                      Yes! I'm curious about what's behind that locked door we found.
+                      Yes! I&apos;m curious about what&apos;s behind that locked door we found.
                     </div>
                   </div>
                   
                   <div className="flex">
                     <div className="mr-2 h-6 w-6 rounded-full bg-accent"></div>
                     <div className="max-w-[70%] rounded-lg rounded-tl-none bg-gray-800 p-2 text-xs text-white">
-                      I've been analyzing the security panel. I think we can bypass it using the access codes we found in the captain's quarters. Let me try...
+                      I&apos;ve been analyzing the security panel. I think we can bypass it using the access codes we found in the captain&apos;s quarters. Let me try...
                     </div>
                   </div>
                   

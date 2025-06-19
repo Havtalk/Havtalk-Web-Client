@@ -2,13 +2,23 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
-import { ChevronsRight, MessageSquare, Send } from 'lucide-react';
+import { ChevronsRight, MessageSquare, Send, AlertCircle, RotateCcw, Trash2 } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { ScrollArea } from '../ui/scroll-area';
-import { Input } from '../ui/input';
-import { BaseUrl } from '@/lib/utils';
-import axios from 'axios';
+import { Textarea } from '../ui/textarea';
+import api from '@/lib/axiosInstance';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from 'sonner';
 
 interface Message {
   id: string;
@@ -40,6 +50,17 @@ interface Character {
   updatedAt: string;
 }
 
+interface UserPersona {
+  id: string;
+  name: string;
+  description: string;
+  personality: string;
+  avatar: string | null;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface ChatSession {
   id: string;
   userId: string;
@@ -52,7 +73,7 @@ interface ChatSession {
   title: string | null;
   messages: Message[];
   character: Character;
-  userpersona: any | null;
+  userpersona: UserPersona | null;
 }
 
 interface ApiResponse {
@@ -61,7 +82,7 @@ interface ApiResponse {
 }
 
 
-function ChatBox({character, messages: initialMessages, sessionId, accentColor, dominantColor, showCharacterDetails, setShowCharacterDetails}:{
+function ChatBox({character, messages: initialMessages, sessionId, accentColor, dominantColor, setShowCharacterDetails, currentPersona}:{
     character: Character;
     messages?: Message[];
     sessionId: string;
@@ -69,15 +90,19 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
     dominantColor: string;
     showCharacterDetails: boolean;
     setShowCharacterDetails: React.Dispatch<React.SetStateAction<boolean>>;
+    currentPersona?: UserPersona | null;
 }) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState<Message[]>(initialMessages || []);
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const [sending, setSending] = useState(false);
     const [streamingContent, setStreamingContent] = useState<string>("");
     const [isStreaming, setIsStreaming] = useState(false);
+    // const [currentSession, setCurrentSession] = useState<ChatSession | null>(null);
+    const [isResetting, setIsResetting] = useState(false);
+    const [showResetConfirmation, setShowResetConfirmation] = useState(false);
 
     // Improved scrollToBottom function that works with radix ScrollArea
     const scrollToBottom = () => {
@@ -150,9 +175,9 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
           
           try {
             // Use axios with responseType 'text' for streaming
-            const response = await axios({
+            await api({
               method: 'post',
-              url: `${BaseUrl}/chatsession/${sessionId}/message/stream`,
+              url: `/chatsession/${sessionId}/message/stream`,
               data: {
                 message: message,
                 role: 'USER'
@@ -233,19 +258,20 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
     }, [messages]);
     
     const fetchChatSession = async () => {
-      setLoading(true);
+      // setLoading(true);
       try {
-        const response = await axios.get<ApiResponse>(`${BaseUrl}/chatsession/${sessionId}`, {
+        const response = await api.get<ApiResponse>(`/chatsession/${sessionId}`, {
           withCredentials: true,
         });
         console.log('Chat session data:', response.data);
         setMessages(response.data.chat.messages);
+        // setCurrentSession(response.data.chat);
       }
       catch (error) {
         console.error('Error fetching chat session:', error);
       }
       finally {
-        setLoading(false);
+        // setLoading(false);
       }
     }
     
@@ -287,7 +313,7 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
           );
         } else {
           // For dialogue parts, further process to handle emphasis and quotes
-          let processedText = part;
+          const processedText = part;
           
           // Split by newlines to maintain line breaks
           const lines = processedText.split(/\n/g);
@@ -318,42 +344,86 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
     });
   };
 
+  // Function to reset the chat
+  const resetChat = async () => {
+    setIsResetting(true);
+    try {
+      const response = await api.post(`/chatsession/${sessionId}/reset`, {}, {
+        withCredentials: true,
+      });
+      
+      if (response.status === 200 || response.status === 201) {
+        // Clear the messages in the UI
+        setMessages([]);
+        toast.success("Chat has been reset successfully");
+        
+        // Fetch the session again to get the new initial message if any
+        fetchChatSession();
+      }
+    } catch (error) {
+      console.error('Error resetting chat:', error);
+      toast.error("Failed to reset chat. Please try again.");
+    } finally {
+      setIsResetting(false);
+      setShowResetConfirmation(false);
+    }
+  };
+
   return (
     <div className="w-full md:w-[calc(100%-320px)] lg:w-[calc(100%-360px)] xl:w-[calc(100%-400px)] h-full flex flex-col backdrop-blur-sm transition-all duration-300 min-h-0">
         {/* Chat Header */}
         <div 
-          className="flex items-center justify-between p-2 sm:p-3 md:p-4 border-b backdrop-blur-sm flex-shrink-0"
+          className="flex flex-col p-2 sm:p-3 md:p-4 border-b backdrop-blur-sm flex-shrink-0"
           style={{ 
             backgroundColor: `rgba(0, 0, 0, 0.4)`,
             borderColor: accentColor 
           }}
         >
-          <div className="flex items-center space-x-2">
-            {/* Mobile Menu Button */}
-           
-            
-            <Avatar className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10">
-              <AvatarImage src={character.avatar || undefined} />
-              <AvatarFallback 
-                className="text-white text-[0.65rem] sm:text-xs md:text-sm"
-                style={{ background: accentColor }}
-              >
-                {character.name.split(' ').map(n => n[0]).join('')}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex">
-              <div>
+          {/* Main header with character info and details button */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Avatar className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10">
+                <AvatarImage src={character.avatar || undefined} />
+                <AvatarFallback 
+                  className="text-white text-[0.65rem] sm:text-xs md:text-sm"
+                  style={{ background: accentColor }}
+                >
+                  {character.name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
                 <h2 className="font-semibold text-white text-xs sm:text-sm md:text-base line-clamp-1 max-w-[150px] sm:max-w-[200px]">{character.name}</h2>
                 <div className="text-[0.65rem] sm:text-xs md:text-sm text-green-400 flex items-center">
                   <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 bg-green-400 rounded-full mr-1 md:mr-2"></div>
                   Online
                 </div>
-                
               </div>
-              
             </div>
-          </div>
-          <Button
+            
+            <div className="flex items-center">
+              <Badge 
+                variant="outline" 
+                className="text-gray-300 text-[0.65rem] sm:text-xs md:text-sm hidden lg:flex mr-2"
+                style={{ borderColor: accentColor }}
+              >
+                <MessageSquare className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1" />
+                {messages.length} messages
+              </Badge>
+              
+              {/* Reset Chat Button - Updated with Trash2 icon */}
+              <Button
+                variant="ghost"
+                size="icon"
+                disabled={isResetting || messages.length === 0}
+                onClick={() => setShowResetConfirmation(true)}
+                className="text-gray-400 hover:text-white w-8 h-8 mr-1"
+                aria-label="Reset chat"
+                title="Reset chat"
+              >
+                <Trash2 className={`w-4 h-4 ${isResetting ? 'animate-spin' : ''}`} />
+              </Button>
+              
+              <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowCharacterDetails(true)}
@@ -361,15 +431,44 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
                 aria-label="Open character details"
               >
                 <ChevronsRight className="w-4 h-4" />
-          </Button>
-          <Badge 
-            variant="outline" 
-            className="text-gray-300 text-[0.65rem] sm:text-xs md:text-sm hidden lg:flex"
-            style={{ borderColor: accentColor }}
-          >
-            <MessageSquare className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1" />
-            {messages.length} messages
-          </Badge>
+              </Button>
+            </div>
+          </div>
+          
+          {/* Persona display as a separate section - only visible on mobile/small screens */}
+          {currentPersona && (
+            <div className="md:hidden mt-2 px-1">
+              <div 
+                className="flex items-center justify-between w-full px-3 py-1.5 rounded-md border"
+                style={{ 
+                  backgroundColor: `rgba(99, 102, 241, 0.15)`,
+                  borderColor: `rgba(99, 102, 241, 0.4)`,
+                  boxShadow: '0 1px 3px rgba(99, 102, 241, 0.2)'
+                }}
+              >
+                <div className="flex items-center">
+                  <Avatar className="h-5 w-5 mr-2 ring-1 ring-indigo-400/40">
+                    <AvatarImage src={currentPersona.avatar || undefined} />
+                    <AvatarFallback className="bg-indigo-600 text-[0.55rem] font-medium">
+                      {currentPersona.name.substring(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="flex items-center">
+                      <span className="text-[0.7rem] text-white font-medium mr-1.5">Your Persona:</span>
+                      <span className="text-[0.7rem] text-indigo-300">{currentPersona.name}</span>
+                    </div>
+                  </div>
+                </div>
+                <Badge 
+                  variant="outline" 
+                  className="text-indigo-300 text-[0.6rem] border-indigo-500/30 bg-indigo-500/10 px-1.5 py-0"
+                >
+                  Active
+                </Badge>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Messages Area */}
@@ -535,7 +634,7 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
           </ScrollArea>
         </div>
 
-        {/* Message Input */}
+        {/* Message Input - Updated with Textarea */}
         <div 
           className="p-2 sm:p-3 md:p-4 border-t backdrop-blur-sm flex-shrink-0"
           style={{ 
@@ -543,21 +642,28 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
             borderColor: accentColor 
           }}
         >
-          <div className="flex items-center space-x-1.5 sm:space-x-2 md:space-x-3 w-full">
+          <div className="flex items-end space-x-1.5 sm:space-x-2 md:space-x-3 w-full relative">
             <div className="relative flex-1 min-w-0">
-              <Input
+              <Textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Type your message..."
-                className="border text-white placeholder-gray-400 h-9 sm:h-10 md:h-12 rounded-lg sm:rounded-xl focus:ring-2 text-xs sm:text-sm md:text-base backdrop-blur-sm w-full"
-                disabled={sending}
+                placeholder={`Message ${character.name}...`}
+                className="resize-none rounded-lg sm:rounded-xl bg-black/30 border text-white placeholder-gray-400 
+                  min-h-[40px] sm:min-h-[44px] md:min-h-[50px] max-h-32 pr-12 
+                  focus:ring-2 text-xs sm:text-sm md:text-base backdrop-blur-sm w-full pt-3"
                 style={{ 
-                  backgroundColor: `rgba(0, 0, 0, 0.3)`,
                   borderColor: dominantColor.replace('0.15', '0.3'),
                   '--tw-ring-color': accentColor
                 } as React.CSSProperties}
+                rows={1}
+                disabled={sending}
               />
+              <div className="absolute right-3 bottom-2 text-xs text-gray-400 pointer-events-none">
+                {message.length > 0 && sending && (
+                  <div className="animate-pulse">Sending...</div>
+                )}
+              </div>
             </div>
             <Button
               onClick={sendMessage}
@@ -571,7 +677,48 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
               <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
             </Button>
           </div>
+          <div className="text-xs text-gray-400 mt-1 text-center hidden sm:block">
+            Press Enter to send • Shift+Enter for new line
+          </div>
         </div>
+
+        {/* Reset Confirmation AlertDialog - Updated from Dialog to AlertDialog */}
+        <AlertDialog open={showResetConfirmation} onOpenChange={setShowResetConfirmation}>
+          <AlertDialogContent className="bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 text-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2 text-white">
+                <AlertCircle className="h-5 w-5 text-red-500" />
+                Reset Conversation
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-400">
+                This will delete all current messages in this chat. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter className="mt-4">
+              <AlertDialogCancel 
+                className="border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
+                onClick={() => setShowResetConfirmation(false)}
+              >
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={resetChat} 
+                disabled={isResetting}
+                className="bg-gradient-to-br from-rose-500 to-red-500 hover:from-rose-600 hover:to-red-600 hover:shadow-lg text-white focus:ring-red-500 transition-all duration-200"
+              >
+                {isResetting ? (
+                  <>
+                    <RotateCcw className="mr-2 h-4 w-4 animate-spin" />
+                    Resetting...
+                  </>
+                ) : (
+                  "Reset Chat"
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
   )
 }

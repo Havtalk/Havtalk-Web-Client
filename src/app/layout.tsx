@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Rubik, Jost } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { PersonaProvider } from "@/hooks/use-preferences";
+import { AuthProvider } from "@/context/auth-context";
+import SessionExpiredModal from "@/components/session-expired-modal";
+import { Toaster } from "@/components/ui/sonner";
+import LoaderProvider from "@/context/loader-provider";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,14 +48,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${rubik.variable} ${jost.variable} min-h-screen bg-background font-sans antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+          <LoaderProvider>
+          <AuthProvider>
+            <PersonaProvider>
+              {children}
+              <SessionExpiredModal />
+              <Toaster/>
+            </PersonaProvider>
+          </AuthProvider>
+          </LoaderProvider>
       </body>
     </html>
   );
