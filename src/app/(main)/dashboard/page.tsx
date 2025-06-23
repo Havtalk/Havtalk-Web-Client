@@ -135,7 +135,7 @@ export default function Dashboard() {
       try {
         // Fetch user's characters, favorites, and conversations in parallel
         const [charactersResponse, favoritesResponse, conversationsResponse] = await Promise.all([
-          api.get(`/character`, { withCredentials: true }),
+          api.get(`/character/public`, { withCredentials: true }),
           api.get(`/user/favorites`, { withCredentials: true }).catch(() => ({ data: { data: [] } })),
           api.get(`/chatsession`, { withCredentials: true }).catch(() => ({ data: { chats: [] } }))
         ]);

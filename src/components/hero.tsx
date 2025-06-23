@@ -4,39 +4,12 @@ import React, {useRef} from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const charactersRef = useRef<HTMLDivElement>(null);
-  // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  // useEffect(() => {
-  //   const handleMouseMove = (e: MouseEvent) => {
-  //     if (!heroRef.current || !charactersRef.current) return;
-  //     if (window.innerWidth < 768) return;
-
-  //     const { clientX, clientY } = e;
-  //     const { innerWidth, innerHeight } = window;
-
-  //     setMousePosition({
-  //       x: (clientX / innerWidth) * 2 - 1,
-  //       y: (clientY / innerHeight) * 2 - 1,
-  //     });
-
-  //     const characters = charactersRef.current.children;
-  //     for (let i = 0; i < characters.length; i++) {
-  //       const character = characters[i] as HTMLElement;
-  //       const speed = parseFloat(character.dataset.speed || "0.15");
-  //       const offsetX = mousePosition.x * speed * 20;
-  //       const offsetY = mousePosition.y * speed * 20;
-  //       character.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-  //     }
-  //   };
-
-  //   window.addEventListener("mousemove", handleMouseMove);
-  //   return () => window.removeEventListener("mousemove", handleMouseMove);
-  // }, [mousePosition]);
-
+  
   return (
     <section
       ref={heroRef}
@@ -47,10 +20,6 @@ export function Hero() {
       <div className="absolute -right-24 top-1/3 h-96 w-96 rounded-full bg-hero-secondary/20 blur-3xl"></div>
       <div className="absolute bottom-12 right-12 h-64 w-64 rounded-full bg-hero-accent/20 blur-3xl"></div>
       <div className="absolute left-1/4 bottom-1/4 h-48 w-48 rounded-full bg-primary/10 blur-2xl"></div>
-
-      {/* Parallax background */}
-      {/* <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/background.jpg')" }}></div> */}
-
       {/* Characters */}
       <div ref={charactersRef} className="absolute inset-0  z-0">
         {/* Character 1 - Left Side - Now hidden on medium screens where content would overlap */}
@@ -66,10 +35,7 @@ export function Hero() {
             className="drop-shadow-glow"
             priority
           />
-          {/* Text Bubble */}
-          {/* <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-4 shadow-md shadow-black/50 max-w-xs">
-            <p className="text-sm text-white font-medium">"Let's explore endless storylines together!"</p>
-          </div> */}
+          
           {/* Shadow beneath the character */}
           <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black via-black/50 to-transparent blur-lg shadow-lg shadow-black/50"></div>
         </div>
@@ -87,10 +53,7 @@ export function Hero() {
             className="drop-shadow-glow animate-float-delayed"
             priority
           />
-          {/* Text Bubble */}
-          {/* <div className="absolute top-0 right-1/2 transform translate-x-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-4 shadow-md shadow-black/50 max-w-xs">
-            <p className="text-sm text-white font-medium">"I'm here to build meaningful connections."</p>
-          </div> */}
+          
           {/* Shadow beneath the character */}
           <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black via-black/50 to-transparent blur-lg shadow-lg shadow-black/50"></div>
         </div>
@@ -99,35 +62,46 @@ export function Hero() {
       {/* Main content */}
       <div className="container relative z-10 flex justify-center ">
         <div className="max-w-3xl text-center px-4">
-          <h1 className=" font-display text-3xl font-black tracking-tight sm:text-5xl md:text-6xl relative inline-block">
-            <span className="block ">Immersive AI</span>
-            <span className=" bg-black/30 mt-2 block bg-gradient-to-r from-hero-primary via-hero-secondary to-hero-accent bg-clip-text text-transparent animate-gradient">
-              Roleplay Experience
+          <h1 className="font-display text-5xl font-black tracking-tight sm:text-5xl md:text-6xl relative inline-block">
+            <span className="block">Talk to Legends.</span>
+            <span className="bg-black/30 mt-2 block bg-gradient-to-r from-hero-primary via-hero-secondary to-hero-accent bg-clip-text text-transparent animate-gradient">
+              Shape the Story.
             </span>
             <div className="absolute -top-6 -right-6 text-4xl">✨</div>
           </h1>
 
-          <p className=" mt-6 font-body text-lg md:text-xl text-foreground/80 leading-relaxed max-w-2xl mx-auto text-shadow-sm">
-            Create meaningful connections with AI characters in rich, dynamic conversations. Explore endless storylines and build relationships with characters that{" "}
-            <span className="text-hero-primary font-semibold">feel real</span> and respond naturally.
+          <p className="mt-6 font-body text-lg md:text-xl text-foreground/80 leading-relaxed max-w-2xl mx-auto text-shadow-sm">
+            Step into immersive, lifelike conversations with iconic AI characters. Build emotional connections, rewrite destinies, and experience stories that{" "}
+            <span className="text-hero-primary font-semibold">respond and evolve</span> — with you at the heart.
           </p>
 
-          <div className="mt-8 md:mt-10 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
-            <Button
+
+            <div className="mt-8 md:mt-10 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 w-full">
+            <Link
+              href="/auth/register"
+              className="w-full md:w-auto"
+            >
+              <Button
               size="lg"
               className="w-full md:w-auto neo-border group relative overflow-hidden bg-primary font-bold transition-all duration-300 hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
               style={{
                 boxShadow: "5px 5px 0px 0px rgba(0, 0, 0, 1)",
               }}
-            >
-              Start Chatting
+              >
+              Get Started
               <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               <span className="absolute inset-0 bg-white/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
-            </Button>
-            <Button variant="outline" size="lg" className="w-full md:w-auto neo-border font-bold transition-all duration-300 hover:translate-x-1 hover:translate-y-1 hover:shadow-none">
-              Meet Characters
-            </Button>
-          </div>
+              </Button>
+            </Link>
+            <Link
+              href="/auth/login"
+              className="w-full md:w-auto"
+            >
+              <Button size="lg" className="w-full md:w-auto bg-white/10 hover:bg-white/20 neo-border font-bold transition-all duration-300 hover:translate-x-1 hover:translate-y-1 hover:shadow-none">
+              Login
+              </Button>
+            </Link>
+            </div>
 
           {/* Trust indicators */}
           {/* <div className="mt-8 md:mt-10 flex flex-col items-center justify-center space-y-4">
@@ -203,7 +177,7 @@ export function Hero() {
                 <Sparkles className="h-6 w-6 text-white" />
               </div> */}
               <Image
-                src="/ac2c7581-2a42-46b1-9d6d-6cb45ded1440_removalai_preview.png"
+                src="/landing/middle-bottom2.png"
                 alt="Detective Character"
                 width={150}
                 height={150}
@@ -221,7 +195,7 @@ export function Hero() {
                 alt="Detective Character"
                 width={200}
                 height={200}
-                className="drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] animate-float-delayed"
+                className="drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] animate-float"
                 style={{ objectFit: "contain" }}
                 priority
               />
@@ -230,8 +204,8 @@ export function Hero() {
         </div>
 
         {/* Enhanced Light Trails */}
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-hero-primary via-hero-secondary to-hero-accent opacity-60 animate-pulse"></div>
-        <div className="absolute inset-x-0 bottom-1 h-px bg-gradient-to-r from-hero-accent via-hero-primary to-hero-secondary opacity-40 animate-pulse-slow"></div>
+        {/* <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-hero-primary via-hero-secondary to-hero-accent opacity-60 animate-pulse"></div>
+        <div className="absolute inset-x-0 bottom-1 h-px bg-gradient-to-r from-hero-accent via-hero-primary to-hero-secondary opacity-40 animate-pulse-slow"></div> */}
       </div>
     </section>
   );

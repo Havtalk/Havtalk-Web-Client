@@ -423,7 +423,8 @@ export default function EditCharacterPage() {
 
       if (response.status === 200) {
         toast.success("Character updated successfully");
-        router.push(`/characters/${characterId}`);
+        // router.push(`/characters/${characterId}`);
+        router.back();
       } else {
         throw new Error("Failed to update character");
       }

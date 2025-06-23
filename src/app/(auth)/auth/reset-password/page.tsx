@@ -1,15 +1,18 @@
-// 'use client'
-import RegisterForm from '@/components/auth/register-form';
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Sparkles } from 'lucide-react';
 import Image from 'next/image';
+import ResetPasswordForm from '@/components/auth/reset-password-form';
+import { ResetPasswordFallback } from '@/components/skeletons/password-rest-skeleton';
 
-function RegisterPage() {
+function ResetPasswordPage() {
   return (
     <section className="relative overflow-hidden pt-4 pb-16 md:pt-1 md:pb-2 h-auto min-h-[100vh] md:min-h-[100vh] flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black">
       {/* Background decorations */}
       <div className="absolute inset-0 z-0">
-        
+        {/* Stars */}
+        <div className="stars"></div>
+        <div className="stars2"></div>
+        <div className="stars3"></div>
         
         {/* Floating particles (stars) */}
         {Array.from({ length: 50 }).map((_, i) => {
@@ -28,19 +31,20 @@ function RegisterPage() {
                   animation: `twinkle ${Math.random() * 5 + 3}s infinite ease-in-out alternate`,
                   animationDelay: `${Math.random() * 5}s`
                 }}
-              ></div>)}
-          )}
+              ></div>
+            );
+        })}
 
         {/* Animated gradient orbs */}
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-hero-primary/30 rounded-full blur-3xl animate-pulse-slow opacity-30"></div>
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-hero-secondary/30 rounded-full blur-3xl animate-pulse opacity-30"></div>
-        <div className="absolute -top-16 -right-16 w-80 h-80 bg-primary/30 rounded-full blur-3xl animate-pulse-slow opacity-50"></div>
+        <div className="absolute -top-16 -right-16 w-80 h-80 bg-hero-primary/30 rounded-full blur-3xl animate-pulse-slow opacity-50"></div>
         <div className="absolute -bottom-16 -left-16 w-80 h-80 bg-hero-secondary/30 rounded-full blur-3xl animate-pulse-slow opacity-30"></div>
       </div>
       
       {/* Left side image - hidden on small screens */}
       <Image
-        src={'/download__22_-removebg-preview (3).png'}
+        src={'/download__19_-removebg-preview.png'}
         alt="Background Image"
         className='relative z-10 hidden md:block md:absolute md:left-5 lg:left-20 xl:left-32 md:opacity-100 hover:opacity-100 transition-opacity duration-300'
         height={350}
@@ -53,30 +57,25 @@ function RegisterPage() {
           <Sparkles className="h-5 w-5 text-pink-300 animate-pulse" />
           <div className="h-px w-12 bg-gradient-to-r from-purple-400/70 to-transparent"></div>
         </div>
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-300 to-blue-400 bg-clip-text text-transparent animate-gradient">
-          Create Your Universe
-        </h1>
-        <p className="mt-4 text-base md:text-lg text-gray-300 max-w-lg mx-auto leading-relaxed">
-          Join our cosmic community and begin crafting your personalized AI roleplay experience with unique characters.
-        </p>
         
-        <RegisterForm />
-        
+        <Suspense fallback={<ResetPasswordFallback />}>
+            <ResetPasswordForm />
+        </Suspense>
         {/* Bottom decorative element */}
         <div className="absolute bottom-1 inset-x-0 h-px bg-gradient-to-r from-transparent via-hero-secondary/50 to-transparent"></div>
       </div> 
 
       {/* Right side image - hidden on small screens */}
       <Image
-        src={'/image (50).png'}
+        src={'/download__14_-removebg-preview.png'}
         alt="Background Image"
-        className='relative hidden md:block md:absolute md:right-5 lg:right-12 xl:right-16 md:opacity-100 hover:opacity-100 transition-opacity duration-300'
-        height={500}
-        width={500}
+        className='relative hidden md:block md:absolute md:right-5 lg:right-16 xl:right-32 md:opacity-100 hover:opacity-100 transition-opacity duration-300'
+        height={350}
+        width={350}
       />
 
     </section>           
   )
 }
 
-export default RegisterPage;
+export default ResetPasswordPage;

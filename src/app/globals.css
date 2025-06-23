@@ -227,6 +227,15 @@
   }
 }
 
+@keyframes shimmer-fast {
+  from {
+    transform: translateX(-150%);
+  }
+  to {
+    transform: translateX(150%);
+  }
+}
+
 @keyframes stars-animation {
   from {background-position: 0 0;}
   to {background-position: 0 10000px;}
@@ -282,6 +291,10 @@
   animation: shimmer 2s infinite;
 }
 
+.animate-shimmer-fast {
+  animation: shimmer-fast 2.5s linear infinite;
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-in-out forwards;
 }
@@ -327,6 +340,12 @@
 }
 
 @layer utilities {
+  .bg-dot-pattern {
+    background-image: radial-gradient(oklch(var(--foreground) / 0.1) 1px, transparent 0);
+    background-size: 25px 25px;
+  }
+
+  
   .backface-hidden {
     backface-visibility: hidden;
   }
@@ -366,6 +385,17 @@
   @keyframes shine {
     100% {
       transform: translateX(100%);
+    }
+  }
+
+  @keyframes twinkle {
+    0% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
     }
   }
   

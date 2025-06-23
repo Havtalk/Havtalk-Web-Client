@@ -150,7 +150,7 @@ export function NavMain({
 
         <SidebarMenuItem className="mb-2">
           <SidebarMenuButton
-            tooltip="My Personas"
+            tooltip="My Profile"
             asChild
             className="transition-all duration-200 hover:bg-sidebar-primary/10 hover:translate-x-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2"
           >

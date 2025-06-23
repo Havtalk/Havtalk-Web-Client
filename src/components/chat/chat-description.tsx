@@ -53,7 +53,7 @@ type UserPersona = {
   updatedAt: string;
 }
 
-function ChatDescription({character, accentColor, dominantColor, showCharacterDetails, setShowCharacterDetails, sessionId, currentPersona}:{
+function ChatDescription({character, accentColor, dominantColor, showCharacterDetails, setShowCharacterDetails, sessionId, currentPersona ,isGuest=false}:{
     character: Character;
     accentColor: string;
     dominantColor: string;
@@ -61,6 +61,7 @@ function ChatDescription({character, accentColor, dominantColor, showCharacterDe
     setShowCharacterDetails: React.Dispatch<React.SetStateAction<boolean>>;
     sessionId: string;
     currentPersona?: UserPersona | null;
+    isGuest?: boolean;
 }) {
     const [expandedDescription, setExpandedDescription] = useState(false);
     const [expandedPersonality, setExpandedPersonality] = useState(false);
@@ -126,7 +127,7 @@ function ChatDescription({character, accentColor, dominantColor, showCharacterDe
     };
 
   return (
-    <div className={`fixed md:relative z-30 ${showCharacterDetails ? 'w-full left-0' : 'w-0 -left-full'} md:w-full md:max-w-[320px] lg:max-w-[360px] xl:max-w-[400px] h-full border-r backdrop-blur-sm transition-all duration-300 overflow-hidden md:translate-x-0 md:left-0 `}
+    <div className={`fixed md:relative z-30 ${showCharacterDetails ? 'w-full left-0' : 'w-0 -left-full'} md:w-full md:max-w-[320px] lg:max-w-[360px] xl:max-w-[400px] h-full border-r backdrop-blur-sm transition-all duration-300 overflow-hidden md:translate-x-0 md:left-0 pb-20 md:pb-0`}
         style={{
           borderColor: accentColor,
           background: `linear-gradient(to bottom, 
@@ -211,8 +212,8 @@ function ChatDescription({character, accentColor, dominantColor, showCharacterDe
                     <User className="w-4 h-4 mr-2 " />
                     Your Persona
                   </h3>
-                  
-                  <DropdownMenu>
+
+                  {!isGuest&&(<DropdownMenu>
                     <DropdownMenuTrigger asChild disabled={isChangingPersona || isLoadingPersonas}>
                       <Button 
                         variant="ghost" 
@@ -261,7 +262,7 @@ function ChatDescription({character, accentColor, dominantColor, showCharacterDe
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>
-                  </DropdownMenu>
+                  </DropdownMenu>)}
                 </div>
                 
                 {isLoadingPersonas ? (
@@ -306,12 +307,17 @@ function ChatDescription({character, accentColor, dominantColor, showCharacterDe
                       </div>
                     )}
                   </div>
-                ) : (
-                  <div className="text-center py-2">
+                ) : 
+                  !isGuest?(<div className="text-center py-2">
                     <p className="text-gray-400 text-xs sm:text-sm">Using default persona</p>
                     <p className="text-gray-500 text-xs mt-1">Select a persona to enhance your conversation</p>
+                  </div>):(
+                  <div className="text-center py-2">
+                    <p className="text-gray-400 text-xs sm:text-sm">Login to select persona</p>
+                    <p className="text-gray-500 text-xs mt-1">You can create a persona to enhance your conversation</p>
                   </div>
-                )}
+                  )
+                }
               </CardContent>
             </Card>
           </div>

@@ -72,7 +72,7 @@ export default function AllCharacters() {
   }, []);
 
   return (
-    <section className='w-full pb-16 md:pb-20 h-auto min-h-[calc(100vh-4rem)] flex flex-col relative overflow-hidden bg-gradient-to-b from-black to-gray-950'>
+    <section className='w-full pb-10 md:pb-10 h-auto min-h-[calc(100vh-4rem)] flex flex-col relative overflow-hidden bg-gradient-to-b from-black to-gray-950'>
       <BackgroundDesign/>
       <div className={`w-full mx-auto ${isSmallScreen?'px-2':'px-4'} md:px-16 pt-16 md:pt-20`}>
           <h1 className='text-4xl md:text-4xl font-bold text-white mb-4 text-center'>All Characters</h1>
@@ -98,6 +98,7 @@ export default function AllCharacters() {
                 ))
               )}
           </div>
+          <p className='text-gray-400 text-sm mt-8 text-center'> More characters will be added soon! Stay tuned for updates.</p>
       </div>
     </section>
   )

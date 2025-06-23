@@ -14,10 +14,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Loader2, Lock, Mail, Star } from 'lucide-react'
+import { Loader2, Lock, Mail, Star, Eye, EyeOff } from 'lucide-react'
 import { signIn } from '@/lib/auth';
 import { toast } from 'sonner'
 import { useRouter } from '@bprogress/next/app';
+import Link from 'next/link'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -30,6 +31,7 @@ type FormValues = z.infer<typeof formSchema>
 function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const router = useRouter();
   
@@ -161,7 +163,7 @@ function LoginForm() {
       <div className="absolute bottom-12 right-12 h-32 w-32 rounded-full bg-accent/20 blur-3xl"></div>
       
       {/* Form container */}
-      <div className="p-5 sm:p-8 rounded-xl bg-gray-900/80 backdrop-blur-lg border border-gray-700/50 shadow-2xl relative z-10 
+      <div className="p-5 sm:p-8 rounded-xl bg-white/10 backdrop-blur-md border border-gray-700/50 shadow-2xl relative z-10 
       overflow-hidden neo-border transform transition-all duration-300 hover:shadow-primary/10 hover:shadow-lg">
         {/* Animated glow effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 animate-gradient opacity-30"></div>
@@ -247,20 +249,33 @@ function LoginForm() {
                     <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-secondary" /> Password
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      type="password" 
-                      placeholder="••••••••" 
-                      {...field} 
-                      className="bg-gray-800/50 border-gray-700/50 text-white rounded-lg 
-                      focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all duration-300
-                      placeholder:text-gray-500 h-9 sm:h-10" 
-                    />
+                    <div className="relative">
+                      <Input 
+                        type={showPassword ? "text" : "password"} 
+                        placeholder="••••••••" 
+                        {...field} 
+                        className="bg-gray-800/50 border-gray-700/50 text-white rounded-lg 
+                        focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all duration-300
+                        placeholder:text-gray-500 h-9 sm:h-10 pr-10" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? 
+                          <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" /> : 
+                          <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
+                        }
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage className="text-red-400 text-xs sm:text-sm" />
                   <FormDescription className="text-right text-xs sm:text-sm mt-1">
-                    <a href="/auth/forgot-password" className="text-blue-400 hover:text-blue-300 transition-colors">
+                    <Link href="/auth/forgot-password" className="text-blue-400 hover:text-blue-300 transition-colors">
                       Forgot password?
-                    </a>
+                    </Link>
                   </FormDescription>
                 </FormItem>
               )}
@@ -301,7 +316,7 @@ function LoginForm() {
             <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-yellow-500 animate-pulse-slow" fill="currentColor" />
           </div>
           Don&apos;t have an account yet?{' '}
-          <a href="/auth/register" className="relative font-medium bg-gradient-to-r from-accent via-primary to-secondary bg-clip-text text-transparent hover:opacity-80 transition-opacity">
+          <a href="/auth/register" className="relative font-medium bg-gradient-to-r from-primary via-primary/80 to-primary/90 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
             Create your universe
           </a>
         </div>

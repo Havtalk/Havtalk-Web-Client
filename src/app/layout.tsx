@@ -46,7 +46,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${rubik.variable} ${jost.variable} min-h-screen bg-background font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${rubik.variable} ${jost.variable} min-h-screen bg-background font-sans antialiased scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-thumb-gray-800/60`}
       >
           <LoaderProvider>
           <AuthProvider>

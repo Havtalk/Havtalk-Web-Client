@@ -2,29 +2,20 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
-import { ChevronsRight, MessageSquare, Send, AlertCircle, RotateCcw, Trash2 } from 'lucide-react';
+import { ChevronsRight, MessageSquare, Send, } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { ScrollArea } from '../ui/scroll-area';
 import { Textarea } from '../ui/textarea';
 import api from '@/lib/axiosInstance';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { toast } from 'sonner';
+import { AxiosError } from 'axios';
+import GuestLimitEndModal from '../guest-limit-end-modal';
 
 interface Message {
   id: string;
-  sessionId: string;
   content: string;
-  role: 'USER' | 'AI';
+  role: 'user' | 'model';
   createdAt: string;
 }
 
@@ -61,31 +52,25 @@ interface UserPersona {
   updatedAt: string;
 }
 
-interface ChatSession {
-  id: string;
-  userId: string;
-  characterId: string;
-  environment: string | null;
-  userpersonaId: string | null;
-  createdAt: string;
-  updatedAt: string;
-  isPublic: boolean;
-  title: string | null;
-  messages: Message[];
-  character: Character;
-  userpersona: UserPersona | null;
-}
-
-interface ApiResponse {
-  message: string;
-  chat: ChatSession;
-}
+// interface ChatSession {
+//   id: string;
+//   userId: string;
+//   characterId: string;
+//   environment: string | null;
+//   userpersonaId: string | null;
+//   createdAt: string;
+//   updatedAt: string;
+//   isPublic: boolean;
+//   title: string | null;
+//   messages: Message[];
+//   character: Character;
+//   userpersona: UserPersona | null;
+// }
 
 
-function ChatBox({character, messages: initialMessages, sessionId, accentColor, dominantColor, setShowCharacterDetails, currentPersona}:{
+function ChatBox({character, messages: initialMessages, accentColor, dominantColor, setShowCharacterDetails}:{
     character: Character;
     messages?: Message[];
-    sessionId: string;
     accentColor: string;
     dominantColor: string;
     showCharacterDetails: boolean;
@@ -96,15 +81,12 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState<Message[]>(initialMessages || []);
-    // const [loading, setLoading] = useState(false);
     const [sending, setSending] = useState(false);
     const [streamingContent, setStreamingContent] = useState<string>("");
     const [isStreaming, setIsStreaming] = useState(false);
-    // const [currentSession, setCurrentSession] = useState<ChatSession | null>(null);
-    const [isResetting, setIsResetting] = useState(false);
-    const [showResetConfirmation, setShowResetConfirmation] = useState(false);
+    // const [isResetting, setIsResetting] = useState(false);
+    const [guestLimitReached, setGuestLimitReached] = useState(false);
 
-    // Improved scrollToBottom function that works with radix ScrollArea
     const scrollToBottom = () => {
       if (scrollAreaRef.current) {
         const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
@@ -161,14 +143,14 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
     const sendMessage = async () => {
         if (message.trim()) {
           const userMessage: Message = {
-            id: Date.now().toString(), // temporary id
-            sessionId: sessionId,
+            id: Date.now().toString(),
             content: message,
-            role: 'USER',
+            role: 'user',
             createdAt: new Date().toISOString()
           };
           
           setMessages(prev => [...prev, userMessage]);
+          localStorage.setItem(`guest-chat-${character.id}`, JSON.stringify([...messages, userMessage]));
           setSending(true);
           setIsStreaming(true);
           setStreamingContent("");
@@ -177,10 +159,14 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
             // Use axios with responseType 'text' for streaming
             await api({
               method: 'post',
-              url: `/chatsession/${sessionId}/message/stream`,
+              url: `/guest/${character.id}/message/stream`,
               data: {
                 message: message,
-                role: 'USER'
+                role: 'user',
+                history: messages.map(msg => ({
+                  parts: [{text:msg.content}],
+                  role: msg.role
+                }))
               },
               responseType: 'text',
               withCredentials: true,
@@ -222,9 +208,8 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
                 if (isComplete && completeData) {
                   const aiMessage: Message = {
                     id: Date.now().toString(),
-                    sessionId: sessionId,
                     content: completeData.fullResponse,
-                    role: 'AI',
+                    role: 'model',
                     createdAt: completeData.timestamp
                   };
                   
@@ -236,9 +221,17 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
             
           } catch (error) {
             console.error('Error sending message:', error);
+            if(error instanceof AxiosError){
+              if(error.response && error.response.status === 403) {
+                toast.error("Guest session limit reached. Please log in or sign up to continue.");
+                setGuestLimitReached(true);
+                return;
+              }
+            }
+            toast.error("Failed to send message. Please try again later.");
+            
             setIsStreaming(false);
             // Attempt to get messages even if streaming failed
-            fetchChatSession();
           } finally {
             setSending(false);
             setMessage("");
@@ -256,33 +249,6 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
     useEffect(() => {
       scrollToBottom();
     }, [messages]);
-    
-    const fetchChatSession = async () => {
-      // setLoading(true);
-      try {
-        const response = await api.get<ApiResponse>(`/chatsession/${sessionId}`, {
-          withCredentials: true,
-        });
-        console.log('Chat session data:', response.data);
-        setMessages(response.data.chat.messages);
-        // setCurrentSession(response.data.chat);
-      }
-      catch (error) {
-        console.error('Error fetching chat session:', error);
-      }
-      finally {
-        // setLoading(false);
-      }
-    }
-    
-    useEffect(() => {
-      if (initialMessages && initialMessages.length > 0) {
-        setMessages(initialMessages);
-      } else {
-        fetchChatSession();
-      }
-    }, [sessionId, initialMessages]);
-
 
   // Enhanced message formatting function with better styling and support for various text elements
   const formatMessageContent = (content: string) => {
@@ -344,30 +310,6 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
     });
   };
 
-  const resetChat = async () => {
-    setIsResetting(true);
-    try {
-      const response = await api.post(`/chatsession/${sessionId}/reset`, {}, {
-        withCredentials: true,
-      });
-      
-      if (response.status === 200 || response.status === 201) {
-        // Clear the messages in the UI
-        setMessages([]);
-        toast.success("Chat has been reset successfully");
-        
-        // Fetch the session again to get the new initial message if any
-        fetchChatSession();
-      }
-    } catch (error) {
-      console.error('Error resetting chat:', error);
-      toast.error("Failed to reset chat. Please try again.");
-    } finally {
-      setIsResetting(false);
-      setShowResetConfirmation(false);
-    }
-  };
-
   return (
     <div className="w-full md:w-[calc(100%-320px)] lg:w-[calc(100%-360px)] xl:w-[calc(100%-400px)] h-full flex flex-col backdrop-blur-sm transition-all duration-300 min-h-0">
         {/* Chat Header */}
@@ -409,19 +351,6 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
                 {messages.length} messages
               </Badge>
               
-              {/* Reset Chat Button - Updated with Trash2 icon */}
-              <Button
-                variant="ghost"
-                size="icon"
-                disabled={isResetting || messages.length === 0}
-                onClick={() => setShowResetConfirmation(true)}
-                className="text-gray-400 hover:text-white w-8 h-8 mr-1"
-                aria-label="Reset chat"
-                title="Reset chat"
-              >
-                <Trash2 className={`w-4 h-4 ${isResetting ? 'animate-spin' : ''}`} />
-              </Button>
-              
               <Button
                 variant="ghost"
                 size="icon"
@@ -435,7 +364,7 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
           </div>
           
           {/* Persona display as a separate section - only visible on mobile/small screens */}
-          {currentPersona && (
+          {/* {currentPersona && (
             <div className="md:hidden mt-2 px-1">
               <div 
                 className="flex items-center justify-between w-full px-3 py-1.5 rounded-md border"
@@ -467,7 +396,7 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
                 </Badge>
               </div>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Messages Area */}
@@ -478,10 +407,10 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`flex ${msg.role === 'USER' ? 'justify-end' : 'justify-start'}`}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`flex items-end space-x-2 sm:space-x-1.5 md:space-x-2 max-w-[90%] sm:max-w-[85%] md:max-w-[80%] lg:max-w-[75%] ${msg.role === 'USER' ? 'flex-row-reverse space-x-reverse sm:space-x-reverse md:space-x-reverse' : ''}`}>
-                      {msg.role === 'AI' && (
+                    <div className={`flex items-end space-x-2 sm:space-x-1.5 md:space-x-2 max-w-[90%] sm:max-w-[85%] md:max-w-[80%] lg:max-w-[75%] ${msg.role === 'user' ? 'flex-row-reverse space-x-reverse sm:space-x-reverse md:space-x-reverse' : ''}`}>
+                      {msg.role === 'model' && (
                         <Avatar className="w-7 h-7 sm:w-7 sm:h-7 md:w-8 md:h-8 mb-1 flex-shrink-0">
                           <AvatarImage src={character.avatar || undefined} />
                           <AvatarFallback 
@@ -494,24 +423,24 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
                       )}
                       <div
                         className={`px-3 py-2 sm:px-3.5 sm:py-2.5 md:px-4 md:py-3 rounded-xl sm:rounded-2xl break-words ${
-                          msg.role === 'USER'
+                          msg.role === 'user'
                             ? 'text-white'
                             : 'text-gray-100 border backdrop-blur-sm'
                         }`}
                         style={{
-                          background: msg.role === 'USER' 
+                          background: msg.role === 'user' 
                             ? `linear-gradient(135deg, ${accentColor}, ${dominantColor.replace('0.15', '0.6')})` 
                             : `rgba(0, 0, 0, 0.4)`,
-                          borderColor: msg.role === 'AI' ? dominantColor.replace('0.15', '0.3') : 'transparent',
+                          borderColor: msg.role === 'model' ? dominantColor.replace('0.15', '0.3') : 'transparent',
                           wordWrap: 'break-word',
                           overflowWrap: 'break-word',
                           hyphens: 'auto'
                         }}
                       >
                         <p className="text-sm xs:text-base sm:text-sm md:text-sm leading-relaxed whitespace-pre-wrap">
-                          {msg.role === 'AI' ? formatMessageContent(msg.content) : msg.content}
+                          {msg.role === 'user' ? formatMessageContent(msg.content) : msg.content}
                         </p>
-                        <p className={`text-xs xs:text-xs sm:text-xs mt-1 ${msg.role === 'USER' ? 'text-white/80' : 'text-gray-400'}`}>
+                        <p className={`text-xs xs:text-xs sm:text-xs mt-1 ${msg.role === 'user' ? 'text-white/80' : 'text-gray-400'}`}>
                           {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>
@@ -681,43 +610,12 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
           </div>
         </div>
 
-        {/* Reset Confirmation AlertDialog - Updated from Dialog to AlertDialog */}
-        <AlertDialog open={showResetConfirmation} onOpenChange={setShowResetConfirmation}>
-          <AlertDialogContent className="bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 text-white">
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex items-center gap-2 text-white">
-                <AlertCircle className="h-5 w-5 text-red-500" />
-                Reset Conversation
-              </AlertDialogTitle>
-              <AlertDialogDescription className="text-gray-400">
-                This will delete all current messages in this chat. This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
+        <GuestLimitEndModal
+          guestLimitReached={guestLimitReached}
+          setGuestLimitReached={setGuestLimitReached}
+        />
 
-            <AlertDialogFooter className="mt-4">
-              <AlertDialogCancel 
-                className="border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
-                onClick={() => setShowResetConfirmation(false)}
-              >
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction 
-                onClick={resetChat} 
-                disabled={isResetting}
-                className="bg-gradient-to-br from-rose-500 to-red-500 hover:from-rose-600 hover:to-red-600 hover:shadow-lg text-white focus:ring-red-500 transition-all duration-200"
-              >
-                {isResetting ? (
-                  <>
-                    <RotateCcw className="mr-2 h-4 w-4 animate-spin" />
-                    Resetting...
-                  </>
-                ) : (
-                  "Reset Chat"
-                )}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+       
       </div>
   )
 }

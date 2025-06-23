@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from "./ui/navigation-menu";
 
 interface HeaderProps {
   className?: string;
@@ -87,21 +88,21 @@ export function Header({ className }: HeaderProps) {
 
         {/* Desktop Navigation */}
         <div className="hidden items-center gap-6 md:flex">
-          {/* <NavigationMenu className="hidden md:block">
+          <NavigationMenu className="hidden md:block">
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link href="/#features" legacyBehavior passHref>
+                <Link href="/#characters" legacyBehavior passHref>
                   <NavigationMenuLink
                     className={cn(
                       navigationMenuTriggerStyle(),
                       "font-medium text-foreground transition-all duration-200 hover:font-bold hover:text-primary"
                     )}
                   >
-                    Features
+                    Meet Characters
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-              <NavigationMenuItem>
+              {/* <NavigationMenuItem>
                 <Link href="/#pricing" legacyBehavior passHref>
                   <NavigationMenuLink
                     className={cn(
@@ -136,21 +137,34 @@ export function Header({ className }: HeaderProps) {
                     FAQ
                   </NavigationMenuLink>
                 </Link>
-              </NavigationMenuItem>
+              </NavigationMenuItem> */}
             </NavigationMenuList>
-          </NavigationMenu> */}
+          </NavigationMenu>
 
           <div className="flex items-center gap-3">
-            {/* <ThemeToggle /> */}
-            <Button
-              className="neo-border relative overflow-hidden bg-primary text-white transition-all duration-300 hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-x-1 active:translate-y-1 active:shadow-none"
-              style={{
-                boxShadow: "5px 5px 0px 0px rgba(0,0,0,1)",
-              }}
-            >
-              Get Started
-              <span className="absolute inset-0 bg-white mix-blend-difference"></span>
-            </Button>
+            <Link
+              href="/auth/register">
+              <Button
+                className="neo-border relative overflow-hidden bg-primary text-white transition-all duration-300 hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-x-1 active:translate-y-1 active:shadow-none"
+                style={{
+                  boxShadow: "5px 5px 0px 0px rgba(0,0,0,1)",
+                }}
+              >
+                Get Started
+                <span className="absolute inset-0 bg-white mix-blend-difference"></span>
+              </Button>
+            </Link>
+            <Link
+              href="/auth/login">
+              <Button
+                className="neo-border relative overflow-hidden bg-primary text-white transition-all duration-300 hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-x-1 active:translate-y-1 active:shadow-none"
+                style={{
+                  boxShadow: "5px 5px 0px 0px rgba(0,0,0,1)",
+                }}
+              >
+                Login
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -175,10 +189,15 @@ export function Header({ className }: HeaderProps) {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-x-0 top-[calc(var(--header-height,4rem))] z-30 h-[calc(100vh-var(--header-height,4rem))] overflow-auto bg-background pb-6 pt-4 md:hidden">
+        <div className="fixed w-full inset-x-0 top-[calc(var(--header-height,4.5rem))] z-30 h-[calc(100vh-var(--header-height,4.5rem))] overflow-auto bg-black/85 pb-6 pt-5 md:hidden"
+          style={{
+            paddingLeft:"0px",
+            paddingRight:"0px",
+          }}
+        >
           <div className="container">
             <nav className="flex flex-col space-y-4">
-              <Link
+              {/* <Link
                 href="/#features"
                 className="font-display text-2xl font-bold transition-all duration-200 hover:text-primary"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -198,23 +217,39 @@ export function Header({ className }: HeaderProps) {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Testimonials
-              </Link>
+              </Link> */}
               <Link
-                href="/#faq"
+                href="/#characters"
                 className="font-display text-2xl font-bold transition-all duration-200 hover:text-primary"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                FAQ
+                Meet Characters
               </Link>
-              <Button
-                className="neo-border mt-4 bg-primary text-white transition-all duration-300 hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
-                style={{
-                  boxShadow: "5px 5px 0px 0px rgba(0,0,0,1)",
-                }}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Get Started
-              </Button>
+              <Link
+              href="/auth/register">
+                <Button
+                  className="relative overflow-hidden neo-border mt-4 bg-primary text-white transition-all duration-300 hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
+                  style={{
+                    boxShadow: "5px 5px 0px 0px rgba(0,0,0,1)",
+                  }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Get Started
+                  <span className="absolute inset-0 bg-white mix-blend-difference"></span>
+                </Button>
+              </Link>
+              <Link
+                href="/auth/login">
+                <Button
+                  className="relative neo-border mt-4 bg-primary text-white transition-all duration-300 hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
+                  style={{
+                    boxShadow: "5px 5px 0px 0px rgba(0,0,0,1)",
+                  }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Login
+                </Button>
+              </Link>
             </nav>
           </div>
         </div>

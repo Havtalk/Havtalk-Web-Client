@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SidebarTrigger } from './ui/sidebar';
 import {
   DropdownMenu,
@@ -20,7 +20,15 @@ function Header() {
     const userEmail = session?.user?.email || 'example@gmail.com'
     const userInitial = userName.charAt(0).toUpperCase();
     const userAvatar = session?.user?.image; 
+    const [avatar,setAvatar]=useState<string | null>(userAvatar || null);
     const isLoggedIn = !!session;
+    useEffect(() => {
+        if (session?.user?.image) {
+            setAvatar(session.user.image);
+        } else {
+            setAvatar(null);
+        }
+    }, [session, userAvatar]);
   return (
     <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 bg-gradient-to-r from-zinc-950/95 via-zinc-900/95 to-zinc-950/95 backdrop-blur-xl border-b border-zinc-800/50 shadow-lg shadow-black/20">
         <div className="flex items-center gap-3 px-6">
@@ -78,7 +86,7 @@ function Header() {
                 <DropdownMenu>
                     <DropdownMenuTrigger className="h-10 w-10 rounded-full hover:bg-zinc-800/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 flex items-center justify-center">
                         <Avatar className="border-2 border-zinc-700/70 h-10 w-10 group-hover:border-indigo-500/50 transition-all duration-300 shadow-md shadow-black/20">
-                            <AvatarImage src={userAvatar as string} alt={userName} className="rounded-full" />
+                            <AvatarImage src={avatar as string} alt={userName} className="rounded-full" />
                             <AvatarFallback className="text-sm font-semibold bg-gradient-to-br from-indigo-600 to-blue-600 text-white">
                                 {userInitial}
                             </AvatarFallback>
@@ -94,7 +102,7 @@ function Header() {
                         <Link href="/profile">
                             <div className="px-3 pt-3 pb-2 flex items-center gap-3 border-b border-zinc-800/60 relative cursor-pointer hover:bg-white/5">
                                 <Avatar className="h-9 w-9 ring-2 ring-indigo-500/20 ring-offset-1 ring-offset-zinc-900">
-                                    <AvatarImage src={userAvatar as string} alt={userName} className="rounded-full" />
+                                    <AvatarImage src={avatar as string} alt={userName} className="rounded-full" />
                                     <AvatarFallback className="bg-gradient-to-br from-indigo-600 to-blue-600 text-white text-sm font-semibold">
                                         {userInitial}
                                     </AvatarFallback>

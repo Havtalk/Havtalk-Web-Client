@@ -13,21 +13,26 @@ function LoginPage() {
         <div className="stars2"></div>
         <div className="stars3"></div>
         
-        {/* Floating particles */}
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div 
-            key={`particle-${i}`}
-            className="absolute rounded-full bg-white/10"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 6 + 2}px`,
-              height: `${Math.random() * 6 + 2}px`,
-              animation: `float ${Math.random() * 10 + 10}s infinite ease-in-out`,
-              animationDelay: `${Math.random() * 5}s`
-            }}
-          ></div>
-        ))}
+        {/* Floating particles (stars) */}
+        {Array.from({ length: 50 }).map((_, i) => {
+          const size = Math.random() * 3 + 1; 
+          return (
+            <div 
+              key={`particle-${i}`}
+              className="absolute rounded-full bg-white"
+              style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  opacity: Math.random() * 0.7 + 0.3,
+                  boxShadow: `0 0 ${Math.random() * 5 + 2}px rgba(255, 255, 255, 0.8)`,
+                  animation: `twinkle ${Math.random() * 5 + 3}s infinite ease-in-out alternate`,
+                  animationDelay: `${Math.random() * 5}s`
+                }}
+              ></div>
+            );
+        })}
 
         {/* Animated gradient orbs */}
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-hero-primary/30 rounded-full blur-3xl animate-pulse-slow opacity-30"></div>
@@ -47,15 +52,15 @@ function LoginPage() {
 
       <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-xl px-4 py-6 mx-auto text-center text-white">
         <div className="flex items-center gap-2 mb-3">
-          <div className="h-px w-12 bg-gradient-to-r from-transparent to-hero-primary/70"></div>
-          <Sparkles className="h-5 w-5 text-hero-primary animate-pulse" />
-          <div className="h-px w-12 bg-gradient-to-r from-hero-primary/70 to-transparent"></div>
+          <div className="h-px w-12 bg-gradient-to-r from-transparent to-purple-400/70"></div>
+          <Sparkles className="h-5 w-5 text-pink-300 animate-pulse" />
+          <div className="h-px w-12 bg-gradient-to-r from-purple-400/70 to-transparent"></div>
         </div>
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-hero-primary/80 to-white bg-clip-text text-transparent animate-gradient">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-300 to-blue-400 bg-clip-text text-transparent animate-gradient">
           Access Your Universe
         </h1>
         <p className="mt-4 text-base md:text-lg text-gray-300 max-w-lg mx-auto leading-relaxed">
-          Enter your credentials to continue your journey with our immersive AI roleplay characters and storylines.
+          Enter your credentials to continue your journey with our immersive AI roleplay characters.
         </p>
         
         <LoginForm />

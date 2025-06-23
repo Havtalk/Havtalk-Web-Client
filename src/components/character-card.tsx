@@ -100,11 +100,6 @@ function CharacterCard({
     setIsLoading(true);
     try {
       console.log('Creating chat for character:', character.id, 'with persona:', currentPersonaId);
-      // const response = await axios.post(
-      //   `${BaseUrl}/chatsession`, 
-      //   { characterId: character.id, userpersonaId: currentPersonaId },
-      //   { withCredentials: true }
-      // );
       const response =await api.post(
         `/chatsession`,
         { characterId: character.id, userpersonaId: currentPersonaId },);
@@ -153,7 +148,7 @@ function CharacterCard({
     router.push(`/characters/${character.id}/edit`); 
   };
 
-  const fallbackAvatar = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80';
+  const fallbackAvatar = '/character-not-found.jpg'; // Fallback avatar image
 
   return (
     <>
@@ -280,7 +275,7 @@ function CharacterCard({
               </div>
             </DialogHeader>
             <div className="max-h-[40vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent"> 
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap line-clamp-5">
                 {character.description}
               </p>
             </div>

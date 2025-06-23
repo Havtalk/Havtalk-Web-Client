@@ -1,5 +1,5 @@
 'use client'
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -14,8 +14,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Loader2, Lock, Mail, User, UserCircle, Star } from 'lucide-react'
+import { Loader2, Lock, Mail, User, UserCircle, Star, Eye, EyeOff } from 'lucide-react'
 import { signIn, signUp } from '@/lib/auth';
+import { toast } from 'sonner'
 
 // Define form schema using zod
 const formSchema = z.object({
@@ -38,6 +39,8 @@ type FormValues = z.infer<typeof formSchema>
 
 function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -101,12 +104,13 @@ function RegisterForm() {
       }
       
       console.log('Registration successful:', response);
-      
-      // Example notification for successful registration
-      alert('Registration successful! (This is just a placeholder)')
+      toast.success('Registration successful! Please check your email to verify your account.', {
+        duration: 5000,
+        description: 'A verification email has been sent to your inbox. Please follow the instructions to activate your account.'
+      });
       
     } catch (error) {
-    console.log('Registration failed:', error);
+      console.log('Registration failed:', error);
       if (error instanceof Error && 
           error.message !== 'Email taken' && 
           error.message !== 'Username taken') {
@@ -127,7 +131,7 @@ function RegisterForm() {
       <div className="absolute bottom-12 right-12 h-32 w-32 rounded-full bg-accent/20 blur-3xl"></div>
       
       {/* Form container */}
-      <div className="p-5 sm:p-8 rounded-xl bg-gray-900/80 backdrop-blur-lg border border-gray-700/50 shadow-2xl relative z-10 
+      <div className="p-5 sm:p-8 rounded-xl bg-white/10 backdrop-blur-lg border border-gray-700/50 shadow-2xl relative z-10 
       overflow-hidden neo-border transform transition-all duration-300 hover:shadow-primary/10 hover:shadow-lg">
         {/* Animated glow effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 animate-gradient opacity-30"></div>
@@ -142,7 +146,7 @@ function RegisterForm() {
             <Sparkles className="h-5 w-5 text-primary" />
           </div> */}
           <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary via-white to-secondary bg-clip-text text-transparent animate-gradient-slow">
-            Create Your Universe
+            Register
           </h2>
           <p className="text-gray-300 mt-1 text-sm sm:text-base">Join our community of explorers</p>
         </div>
@@ -176,7 +180,7 @@ function RegisterForm() {
               <div className="w-full border-t border-gray-700/50"></div>
             </div>
             <div className="relative flex justify-center text-xs sm:text-sm">
-              <span className="px-2 bg-gray-900/80 text-gray-400">or continue with email</span>
+              <span className="px-2 text-gray-400">or continue with email</span>
             </div>
           </div>
         </div>
@@ -261,14 +265,27 @@ function RegisterForm() {
                     <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-secondary" /> Password
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      type="password" 
-                      placeholder="••••••••" 
-                      {...field} 
-                      className="bg-gray-800/50 border-gray-700/50 text-white rounded-lg 
-                      focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all duration-300
-                      placeholder:text-gray-500 h-9 sm:h-10" 
-                    />
+                    <div className="relative">
+                      <Input 
+                        type={showPassword ? "text" : "password"} 
+                        placeholder="••••••••" 
+                        {...field} 
+                        className="bg-gray-800/50 border-gray-700/50 text-white rounded-lg 
+                        focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all duration-300
+                        placeholder:text-gray-500 h-9 sm:h-10 pr-10" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? 
+                          <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" /> : 
+                          <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
+                        }
+                      </button>
+                    </div>
                   </FormControl>
                   <FormDescription className="text-xs text-gray-400">
                     Minimum 6 characters with at least one letter, one number, and one special character.
@@ -286,14 +303,27 @@ function RegisterForm() {
                     <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-secondary" /> Confirm Password
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      type="password" 
-                      placeholder="••••••••" 
-                      {...field} 
-                      className="bg-gray-800/50 border-gray-700/50 text-white rounded-lg 
-                      focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all duration-300
-                      placeholder:text-gray-500 h-9 sm:h-10" 
-                    />
+                    <div className="relative">
+                      <Input 
+                        type={showConfirmPassword ? "text" : "password"} 
+                        placeholder="••••••••" 
+                        {...field} 
+                        className="bg-gray-800/50 border-gray-700/50 text-white rounded-lg 
+                        focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all duration-300
+                        placeholder:text-gray-500 h-9 sm:h-10 pr-10" 
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                        tabIndex={-1}
+                      >
+                        {showConfirmPassword ? 
+                          <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" /> : 
+                          <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
+                        }
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage className="text-red-400 text-xs sm:text-sm" />
                 </FormItem>
@@ -335,7 +365,7 @@ function RegisterForm() {
             <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-yellow-500 animate-pulse-slow" fill="currentColor" />
           </div>
           Already have an account?{' '}
-          <a href="/auth/login" className="relative font-medium bg-gradient-to-r from-accent via-primary to-secondary bg-clip-text text-transparent hover:opacity-80 transition-opacity">
+          <a href="/auth/login" className="relative font-medium bg-gradient-to-r from-primary via-primary/80 to-primary/90 bg-clip-text text-transparent hover:opacity-80 transition-opacity">
             Sign in to your universe
           </a>
         </div>

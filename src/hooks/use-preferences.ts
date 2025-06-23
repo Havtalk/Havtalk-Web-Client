@@ -56,8 +56,8 @@ export const PersonaProvider: React.FC<PersonaProviderProps> = ({ children }) =>
     try {
       setIsLoadingUserDetails(true);
       setUserError(null);
-      
-      const response = await axios.get(`${BaseUrl}/user/user-details`, {
+      const baseURL = process.env.NEXT_PUBLIC_API_URL || BaseUrl;
+      const response = await axios.get(`${baseURL}/user/user-details`, {
         withCredentials: true
       });
       

@@ -296,18 +296,19 @@ function Carousel3() {
               <Card className="w-full h-full border-none bg-transparent">
                 <CardContent className="flex flex-col md:flex-row items-center justify-between p-6 md:p-12 lg:p-16 h-full w-full gap-8 md:gap-12">
                   {/* Image container */}
-                  <div className="relative w-full h-[40vh] md:h-[80%] md:w-1/2 flex items-center justify-center">
-                    <div className="relative w-full h-full max-w-md lg:max-w-lg mx-auto">
+                  <div className="relative w-full h-[40vh] md:h-[90%] md:w-1/2 flex items-center justify-center">
+                    <div className="relative w-full h-full max-w-md lg:max-w-lg mx-auto rounded-2xl overflow-hidden">
                       <Image
                         src={slide.image}
                         alt={slide.title}
                         fill
-                        style={{ objectFit: 'contain' }}
-                        className="drop-shadow-2xl"
+                        className="drop-shadow-2xl rounded-2xl object-contain"
+                        // style={{ borderRadius: '1rem' }}
                         priority
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          target.src = '/placeholder-character.png';
+                          target.src = '/character-not-found.jpg'; // Fallback image
+                          target.alt = 'Character not found';
                         }}
                       />
                     </div>
@@ -328,7 +329,7 @@ function Carousel3() {
                       <div className="h-1 w-20 bg-white/40 mx-auto md:mx-0 mb-3 rounded-full"></div>
                     </div>
                     
-                    <p className="text-white/80 text-base md:text-lg leading-relaxed md:line-clamp-2 lg:line-clamp-3 xl:line-clamp-4">
+                    <p className="text-white/80 text-base md:text-lg leading-relaxed line-clamp-4 md:line-clamp-2 lg:line-clamp-3 xl:line-clamp-4">
                       {slide.description}
                     </p>
                     

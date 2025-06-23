@@ -165,7 +165,7 @@ export default function CharacterDetailsPage() {
 
   const startChat = () => {
     // Implement chat functionality here
-    router.push(`/chat?characterId=${characterId}`);
+    router.push(`/chat/${characterId}`);
   };
 
   if (isLoading) {
