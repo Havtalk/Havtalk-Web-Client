@@ -1,8 +1,9 @@
 import axios from "axios";
 import { BaseUrl } from "./utils";
-
+const baseURL = process.env.NEXT_PUBLIC_API_URL || BaseUrl;
+const updatedBaseURL = baseURL+ "/api";
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL||BaseUrl, 
+  baseURL: updatedBaseURL, 
   withCredentials: true, // important for cookies/session
 });
 

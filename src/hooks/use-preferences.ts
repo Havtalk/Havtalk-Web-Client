@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 import { BaseUrl } from '@/lib/utils';
+// import api from '@/lib/axiosInstance';
 
 interface UserDetails {
   id: string;
@@ -56,7 +57,7 @@ export const PersonaProvider: React.FC<PersonaProviderProps> = ({ children }) =>
     try {
       setIsLoadingUserDetails(true);
       setUserError(null);
-      const baseURL = process.env.NEXT_PUBLIC_API_URL || BaseUrl;
+      const baseURL = process.env.NEXT_PUBLIC_API_URL +'/api' || BaseUrl + '/api';
       const response = await axios.get(`${baseURL}/user/user-details`, {
         withCredentials: true
       });
