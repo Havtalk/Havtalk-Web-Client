@@ -19,7 +19,7 @@ const characters = [
     name: "Cleopatra",
     tags: ["Mysterious", "Wise", "Strategic"],
     quote: "The last Pharaoh, ruler of Egypt — cunning, captivating, and ready to share secrets of power, love, and legacy.",
-    image: "/landing/cleopatra.png", // Make sure this image exists!
+    image: "/landing/cleopatra.png", 
     bgGradient: "bg-gradient-to-t from-purple-900/50 via-purple-900/10 to-transparent",
   },
   {
