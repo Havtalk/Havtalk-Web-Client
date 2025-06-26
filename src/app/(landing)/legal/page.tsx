@@ -50,10 +50,14 @@ export default function LegalPage() {
             // "You can request a copy of your data through the app settings."
         ]} />
         
-        <div id="terms-and-conditions"></div>
+        
         <Section title="6. Updates" content={[
-            "We may update this policy occasionally. You will be notified of significant changes via in-app notification."
+            "We may update this policy occasionally. You will be notified of significant changes via email or in-app notification."
         ]}  />
+        <div id="terms-and-conditions"></div>
+        <Section title="7. Contact" content={[
+          "If you have any privacy-related questions or concerns, please contact us at privacy@havtalk.site."
+        ]} />
         
         <hr className="my-12" />
         
@@ -98,8 +102,7 @@ export default function LegalPage() {
         ]} />
 
         <Section title="8. Contact" content={[
-            "Currently, we do not provide a public support email.",
-            "If you have questions, please reach out to us through our contact form (coming soon) or via our official social media channels."
+            "For questions, contact us at support@havtalk.site."
         ]} />
         
         </main>

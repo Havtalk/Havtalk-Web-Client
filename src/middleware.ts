@@ -34,7 +34,8 @@ export async function middleware(request: NextRequest) {
 
 	if (isAdminRoute && sessionCookie) {
 		const cookieHeader = request.headers.get("cookie") || "";
-		const response = await axios.get("http://localhost:8080/api/me", {
+		const backendUrl = process.env.NEXT_PUBLIC_API_URL;
+		const response = await axios.get(`${backendUrl}/api/custom-auth/session`, {
 			headers: { cookie: cookieHeader }
 		});
 		if (response.status !== 200 || !response.data) {

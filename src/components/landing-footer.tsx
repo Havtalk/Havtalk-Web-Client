@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+// import { Mail } from "lucide-react";
 // import { Button } from "@/components/ui/button";
 // import { Input } from "@/components/ui/input";
 // import { Facebook, Github, Instagram, Linkedin, Mail, SendHorizontal, Twitter } from "lucide-react";
@@ -26,11 +27,11 @@ export function LandingFooter() {
             </Link>
             {/* <a href="/cookies" className="hover:text-primary">
               Cookies
-            </a>
-            <a href="mailto:support@havtalk.com" className="flex items-center hover:text-primary">
-              <Mail className="mr-1 h-4 w-4" />
-              Contact
             </a> */}
+            <a href="mailto:support@havtalk.site" className="flex items-center hover:text-primary">
+              {/* <Mail className="mr-1 h-4 w-4" /> */}
+              Contact
+            </a>
           </div>
         </div>
       </div>

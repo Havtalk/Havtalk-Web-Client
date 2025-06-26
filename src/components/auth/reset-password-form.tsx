@@ -3,7 +3,7 @@ import React from 'react'
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader } from 'lucide-react';
 import {z} from 'zod';
 import { toast } from 'sonner';
 import { resetPassword } from '@/lib/auth';
@@ -14,6 +14,7 @@ function ResetPasswordForm() {
     const [showPassword, setShowPassword] = React.useState(false);
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
     const token=useSearchParams().get('token');
     console.log('Reset token:', token);
     const schema = z.object({
@@ -33,6 +34,7 @@ function ResetPasswordForm() {
 
     const handleSubmit = async () => {
         try {
+            setIsLoading(true);
             const result = schema.safeParse({ password, confirmPassword });
             if (!result.success) {
                 console.error('Validation errors:', result.error.errors);
@@ -54,6 +56,8 @@ function ResetPasswordForm() {
         } catch (error) {
             console.error('Error resetting password:', error);
             toast.error('Failed to reset password. Please try again.');
+        }finally {
+            setIsLoading(false);
         }
     };
 
@@ -112,8 +116,8 @@ function ResetPasswordForm() {
             </button>
         </div>
         
-        <Button onClick={()=>handleSubmit()} className="px-6 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
-            Reset Password
+        <Button onClick={()=>handleSubmit()} disabled={isLoading} className="px-6 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
+        {isLoading ?(<Loader className="animate-spin w-5 h-5" />): 'Reset Password'}
         </Button>
     </Card>
         

@@ -38,7 +38,7 @@ export default function GuestLimitEndModal({guestLimitReached,setGuestLimitReach
         <div className="flex justify-center mb-4 w-full">
           <div className="relative w-[160px] h-[200px] overflow-hidden rounded-xl">
             <Image
-              src="/auth/session-expired-anime.png"
+              src="/guest-limit-reached.png"
               alt="Session Expired Character"
               fill
               className="object-cover object-top drop-shadow-lg"

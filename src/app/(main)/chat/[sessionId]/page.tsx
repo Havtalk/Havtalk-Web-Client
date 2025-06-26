@@ -7,6 +7,7 @@ import ChatBox from "@/components/chat/chatbox";
 import api from "@/lib/axiosInstance";
 import ChatSkeleton from "@/components/skeletons/chat-skeleton";
 import { useParams } from "next/navigation";
+import ChatNotFound from "@/components/chat-not-found";
 
 // Define types for our API response
 interface Message {
@@ -150,12 +151,7 @@ export default function Chat() {
 
   if (!character) {
     return (
-      <div className="h-[calc(100vh-4rem)] w-full flex items-center justify-center bg-slate-900">
-        <div className="p-6 bg-slate-800 rounded-lg">
-          <h2 className="text-xl font-semibold text-white mb-2">Chat not found</h2>
-          <p className="text-gray-300">The requested chat session could not be loaded.</p>
-        </div>
-      </div>
+      <ChatNotFound/>
     );
   }
 

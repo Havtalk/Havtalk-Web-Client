@@ -343,6 +343,18 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
       );
     });
   };
+  // Helper function to generate random conversation starter prompts
+  const getRandomPrompt=(character: Character): string=> {
+    const prompts = [
+      `Hi ${character.name}, nice to meet you!`,
+      `Hello there! I'd love to chat with you.`,
+      `Hey ${character.name}! How are you today?`,
+      `I've been looking forward to talking with you!`,
+      `What's on your mind today?`
+    ];
+    
+    return prompts[Math.floor(Math.random() * prompts.length)];
+  }
 
   const resetChat = async () => {
     setIsResetting(true);
@@ -474,6 +486,34 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
         <div className="flex-1 min-h-0 relative">
           <ScrollArea className="h-full w-full" ref={scrollAreaRef}>
             <div className="p-2 md:p-3 lg:p-4">
+              {messages.length === 0 && !isStreaming && !sending && (
+                <motion.div 
+                  className="flex flex-col items-center justify-center text-center py-8 px-4"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div 
+                    className="p-3 rounded-full mb-4"
+                    style={{ background: `linear-gradient(135deg, ${accentColor}40, ${dominantColor.replace('0.15', '0.3')})` }}
+                  >
+                    <MessageSquare className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Start a conversation</h3>
+                  <p className="text-gray-300 mb-4 max-w-md">
+                    Send your first message to begin chatting with {character.name}
+                  </p>
+                  <div 
+                    className="px-4 py-3 rounded-lg border text-white text-sm"
+                    style={{ 
+                      background: `rgba(0, 0, 0, 0.4)`,
+                      borderColor: dominantColor.replace('0.15', '0.3')
+                    }}
+                  >
+                    <p>Try saying: <span className="italic text-gray-300">"{getRandomPrompt(character)}"</span></p>
+                  </div>
+                </motion.div>
+              )}
               <div className="space-y-3 sm:space-y-3 md:space-y-4 min-h-full">
                 {messages.map((msg) => (
                   <div

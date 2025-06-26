@@ -509,24 +509,9 @@ export default function Dashboard() {
 
           </div>
         ) : (
-          <div className="bg-gradient-to-r from-red-500 to-yellow-400 backdrop-blur-2xl rounded-3xl p-16 text-center border border-slate-700/50 shadow-2xl hover:shadow-[0_0_50px_-10px_rgba(59,130,246,0.2)] transition-shadow duration-500"> {/* More rounded */}
-            <div className="relative w-24 h-24 mx-auto mb-10">
-              <div className="absolute inset-0 rounded-full bg-sky-600/20 animate-pulse-slow blur-xl"></div>
-              {/* Replace with a more abstract/modern "connection" icon if available */}
-              <svg className="absolute inset-0 m-auto text-sky-400/70 w-14 h-14 opacity-80 group-hover:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <circle cx="12" cy="12" r="3" />
-                <line x1="12" y1="2" x2="12" y2="5" />
-                <line x1="12" y1="19" x2="12" y2="22" />
-                <line x1="2" y1="12" x2="5" y2="12" />
-                <line x1="19" y1="12" x2="22" y2="12" />
-              </svg>
+            <div className="text-center py-8 text-muted-foreground">
+            No past conversation found. Talk to a character to start your first chat!
             </div>
-            <h3 className="text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-cyan-300 to-purple-400 mb-5 [text-shadow:0_0_12px_rgba(96,165,250,0.35)]">Connection Standby</h3>
-            <p className="text-slate-300/70 max-w-md mx-auto text-lg leading-relaxed">
-              No active dialogues found. Initiate a new connection or explore available character interfaces.
-            </p>
-          </div>
         )}
       </div>
       
@@ -551,7 +536,7 @@ export default function Dashboard() {
         ) : personasError ? (
           <div className="text-center text-destructive py-8">{personasError}</div>
         ) : personas.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">No personas found.</div>
+          <div className="text-center py-8 text-muted-foreground">No personas found. Create your first persona now</div>
         ) : (
           <div className={`grid justify-center sm:justify-start gap-2 ${isSmallScreen?'grid-cols-[repeat(auto-fill,9rem)]':'grid-cols-[repeat(auto-fill,11rem)]'} sm:gap-4`}>
             {personas.map((persona) => (

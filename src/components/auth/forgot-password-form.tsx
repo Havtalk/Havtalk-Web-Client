@@ -5,11 +5,14 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { forgetPassword } from '@/lib/auth';
 import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
 
 function ForgotPasswordForm() {
     const [email, setEmail] = React.useState('');
+    const [isLoading, setIsLoading] = React.useState(false);
     const handleSubmit = async () => {
         try {
+            setIsLoading(true);
             const { error } = await forgetPassword({
                 email,
                 redirectTo: `${window.location.origin}/auth/reset-password`,
@@ -25,6 +28,8 @@ function ForgotPasswordForm() {
         } catch (error) {
             console.error('Error sending reset link:', error);
             toast.error('Failed to send reset link. Please try again.');
+        }finally {
+            setIsLoading(false);
         }
     };
   return (
@@ -48,8 +53,8 @@ function ForgotPasswordForm() {
             focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 
             placeholder:text-gray-500 h-9 sm:h-10" 
         />
-        <Button onClick={()=>handleSubmit()} className="px-6 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
-            Send Reset Link
+        <Button onClick={()=>handleSubmit()} disabled={isLoading} className="px-6 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
+            {isLoading ? (<Loader className="animate-spin w-5 h-5" />) : 'Send Reset Link'}
         </Button>
     </Card>
   )
