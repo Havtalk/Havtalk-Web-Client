@@ -142,21 +142,21 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
     }, [messages, streamingContent]);
     
     // Add a MutationObserver to detect DOM changes and scroll accordingly
-    useEffect(() => {
-      if (scrollAreaRef.current) {
-        const observer = new MutationObserver(() => {
-          scrollToBottom();
-        });
+    // useEffect(() => {
+    //   if (scrollAreaRef.current) {
+    //     const observer = new MutationObserver(() => {
+    //       scrollToBottom();
+    //     });
         
-        observer.observe(scrollAreaRef.current, {
-          childList: true,
-          subtree: true,
-          characterData: true
-        });
+    //     observer.observe(scrollAreaRef.current, {
+    //       childList: true,
+    //       subtree: true,
+    //       characterData: true
+    //     });
         
-        return () => observer.disconnect();
-      }
-    }, []);
+    //     return () => observer.disconnect();
+    //   }
+    // }, []);
 
     const sendMessage = async () => {
         if (message.trim()) {
@@ -667,7 +667,7 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
                     </motion.div>
                   )}
                 </AnimatePresence>
-                <div ref={messagesEndRef} className="h-1" />
+                {/* <div ref={messagesEndRef} className="h-1" /> */}
               </div>
             </div>
           </ScrollArea>

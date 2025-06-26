@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { ChevronsRight, MessageSquare, Send, } from 'lucide-react';
@@ -124,21 +124,21 @@ function ChatBox({character, messages: initialMessages, accentColor, dominantCol
     }, [messages, streamingContent]);
     
     // Add a MutationObserver to detect DOM changes and scroll accordingly
-    useEffect(() => {
-      if (scrollAreaRef.current) {
-        const observer = new MutationObserver(() => {
-          scrollToBottom();
-        });
+    // useEffect(() => {
+    //   if (scrollAreaRef.current) {
+    //     const observer = new MutationObserver(() => {
+    //       scrollToBottom();
+    //     });
         
-        observer.observe(scrollAreaRef.current, {
-          childList: true,
-          subtree: true,
-          characterData: true
-        });
+    //     observer.observe(scrollAreaRef.current, {
+    //       childList: true,
+    //       subtree: true,
+    //       characterData: true
+    //     });
         
-        return () => observer.disconnect();
-      }
-    }, []);
+    //     return () => observer.disconnect();
+    //   }
+    // }, []);
 
     const sendMessage = async () => {
         if (message.trim()) {
@@ -311,7 +311,7 @@ function ChatBox({character, messages: initialMessages, accentColor, dominantCol
   };
 
   // Helper function to generate random conversation starter prompts
-  const getRandomPrompt=(character: Character): string=> {
+  const getRandomPrompt = (character: Character): string => {
     const prompts = [
       `Hi ${character.name}, nice to meet you!`,
       `Hello there! I'd love to chat with you.`,
@@ -323,6 +323,8 @@ function ChatBox({character, messages: initialMessages, accentColor, dominantCol
     return prompts[Math.floor(Math.random() * prompts.length)];
   }
 
+  // Memoize the random prompt to prevent regeneration on every render
+  const randomPrompt = useMemo(() => getRandomPrompt(character), [character.name]);
 
   return (
     <div className="w-full md:w-[calc(100%-320px)] lg:w-[calc(100%-360px)] xl:w-[calc(100%-400px)] h-full flex flex-col backdrop-blur-sm transition-all duration-300 min-h-0">
@@ -441,7 +443,7 @@ function ChatBox({character, messages: initialMessages, accentColor, dominantCol
                       borderColor: dominantColor.replace('0.15', '0.3')
                     }}
                   >
-                    <p>Try saying: <span className="italic text-gray-300">&quot;{getRandomPrompt(character)}&quot;</span></p>
+                    <p>Try saying: <span className="italic text-gray-300">&quot;{randomPrompt}&quot;</span></p>
                   </div>
                 </motion.div>
               )}
@@ -599,7 +601,7 @@ function ChatBox({character, messages: initialMessages, accentColor, dominantCol
                     </motion.div>
                   )}
                 </AnimatePresence>
-                <div ref={messagesEndRef} className="h-1" />
+                {/* <div ref={messagesEndRef} className="h-1" /> */}
               </div>
             </div>
           </ScrollArea>

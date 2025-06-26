@@ -61,7 +61,7 @@ function RegisterForm() {
         email,
         password,
         username,
-        name
+        name,
       });
       if(error) {
         console.log('Registration error:', error);

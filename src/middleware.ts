@@ -6,7 +6,9 @@ import axios from "axios";
 const protectedPrefixes = ["/dashboard", "/characters", "/personas", "/profile", "/chat"];
 const adminRoutes = ["/admin", "/admin/:path*"]; 
 export async function middleware(request: NextRequest) {
+	console.log("Middleware triggered for request:", request);
 	const sessionCookie = getSessionCookie(request);
+	console.log("Session Cookie:", sessionCookie);
 	const url = request.nextUrl;
     
 	if (
