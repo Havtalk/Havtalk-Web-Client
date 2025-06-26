@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import { BaseUrl } from '@/lib/utils';
 import { changePassword } from '@/lib/auth';
 import api from '@/lib/axiosInstance';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 
 interface UserDetailsResponse {
@@ -56,7 +57,7 @@ function ProfilePage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [avatarSrc, setAvatarSrc] = useState('/image (50).png');
+  const [avatarSrc, setAvatarSrc] = useState('');
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -185,7 +186,7 @@ function ProfilePage() {
         console.error("Error uploading avatar:", error);
         toast.error("Failed to upload profile picture. Please try again.");
         // Revert to previous avatar on error
-        setAvatarSrc('/image (50).png');
+        // setAvatarSrc('/image (50).png');
       } finally {
         setIsUploadingAvatar(false);
       }
@@ -326,15 +327,13 @@ function ProfilePage() {
                 accept="image/*"
                 onChange={handleAvatarChange}
               />
-              <Image
-                src={avatarSrc}
-                alt="User Avatar"
+              <Avatar
                 className={`w-36 h-36 rounded-full border-4 ${isUploadingAvatar ? 'border-yellow-500/70 animate-pulse' : 'border-primary/20'} shadow-lg transition-all duration-300 group-hover:border-primary`}
-                width={144}
-                height={144}
-                onClick={handleAvatarClick}
-                priority
-              />
+              >
+              <AvatarImage src={avatarSrc} alt="User Avatar" className="rounded-full h-full w-full" fetchPriority='high' />
+              <AvatarFallback className="bg-gradient-to-br from-indigo-600 to-blue-600 text-white text-3xl h-full w-full flex items-center justify-center">
+                {name ? name.charAt(0).toUpperCase() : "U"}
+              </AvatarFallback>
               <div 
                 className="absolute inset-0 rounded-full flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer"
                 onClick={handleAvatarClick}
@@ -346,6 +345,7 @@ function ProfilePage() {
                   </div>
                 )}
               </div>
+              </Avatar>
             </div>
             
             <div className="flex flex-col items-center md:items-start">
