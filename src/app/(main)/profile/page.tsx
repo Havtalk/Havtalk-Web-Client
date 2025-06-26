@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Image from 'next/image';
+// import Image from 'next/image';
 import React, { useState, useRef, useEffect } from 'react'
 import { PencilIcon, MailIcon, UserIcon, KeyIcon, AsteriskIcon, LockIcon, EyeIcon, EyeOffIcon, BrainIcon, UploadIcon, Loader2Icon } from 'lucide-react';
 import axios from 'axios';
