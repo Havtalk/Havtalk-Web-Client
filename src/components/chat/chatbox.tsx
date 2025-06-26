@@ -510,7 +510,7 @@ function ChatBox({character, messages: initialMessages, sessionId, accentColor, 
                       borderColor: dominantColor.replace('0.15', '0.3')
                     }}
                   >
-                    <p>Try saying: <span className="italic text-gray-300">"{getRandomPrompt(character)}"</span></p>
+                    <p>Try saying: <span className="italic text-gray-300">&quot;{getRandomPrompt(character)}&quot;</span></p>
                   </div>
                 </motion.div>
               )}
