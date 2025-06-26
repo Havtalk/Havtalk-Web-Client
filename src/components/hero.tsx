@@ -13,7 +13,7 @@ export function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative overflow-hidden pt-16 pb-16 md:pt-20 md:pb-20 h-auto min-h-[100vh] md:min-h-[100vh] flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black"
+      className="relative overflow-hidden pt-16 pb-32 md:pt-20 md:pb-20 h-auto min-h-[100vh] md:min-h-[100vh] flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black"
     >
       {/* Enhanced background elements */}
       <div className="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-hero-primary/20 blur-3xl"></div>
@@ -60,7 +60,7 @@ export function Hero() {
       </div>
 
       {/* Main content */}
-      <div className="container relative z-10 flex justify-center ">
+      <div className="container relative z-10 flex justify-center mb-16 md:mb-0">
         <div className="max-w-3xl text-center px-4">
           <h1 className="font-display text-5xl font-black tracking-tight sm:text-5xl md:text-6xl relative inline-block">
             <span className="block">Talk to Legends.</span>
@@ -148,8 +148,8 @@ export function Hero() {
         </svg>
 
         {/* Enhanced Character Cards */}
-        <div className="absolute inset-x-0 bottom-0 h-48 flex justify-center items-end">
-          <div className="container flex justify-between items-end px-4 pb-6 md:pb-8">
+        <div className="absolute inset-x-0 bottom-0 h-32 md:h-48 flex justify-center items-end">
+          <div className="container flex justify-between items-end px-4 pb-2 md:pb-8">
             {/* Left Character Card */}
             <div className="relative w-32 h-32 md:w-48 md:h-48 transform transition-all duration-300 hover:scale-105">
               <div className="absolute inset-0 rounded-full bg-gradient-to-b from-hero-primary/20 to-transparent blur-md"></div>
