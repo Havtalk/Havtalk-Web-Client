@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const BaseUrl = "http://localhost:8080/api";
+export const BaseUrl = process.env.NEXT_PUBLIC_API_URL+"/api"||"http://localhost:8080/api";
 
 export function base64ToFile(base64String: string, fileName: string): File {
   const arr = base64String.split(',');

@@ -75,7 +75,7 @@ function ChatDescription({character, accentColor, dominantColor, showCharacterDe
       const fetchPersonas = async () => {
         setIsLoadingPersonas(true);
         try {
-          const response = await axios.get(`${BaseUrl}/persona`, {
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL||BaseUrl}/persona`, {
             withCredentials: true
           });
           setPersonas(response.data.personas || []);
