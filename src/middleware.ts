@@ -15,6 +15,11 @@ export async function middleware(request: NextRequest) {
 	const sessionCookie = getSessionCookie(request);
 	console.log("Session Cookie:", sessionCookie);
 	const url = request.nextUrl;
+	const backendUrl = process.env.NEXT_PUBLIC_API_URL;
+	const response = await axios.get(`${backendUrl}/api/custom-auth/session`, {
+			withCredentials: true,
+	});
+	console.log("Backend session response:", response.data);
     
 	if (
 		sessionCookie &&
