@@ -7,19 +7,8 @@ import axios from "axios";
 const protectedPrefixes = ["/dashboard", "/characters", "/personas", "/profile", "/chat"];
 const adminRoutes = ["/admin", "/admin/:path*"]; 
 export async function middleware(request: NextRequest) {
-	console.log("Middleware triggered for request:", request);
-	const cookieHeader = request.headers.get("cookie") || "";
-	console.log("Cookie Header:", cookieHeader);
-	const cookieStore = await cookies();
-	console.log("Cookie Store:", cookieStore.getAll());
 	const sessionCookie = getSessionCookie(request);
-	console.log("Session Cookie:", sessionCookie);
 	const url = request.nextUrl;
-	const backendUrl = process.env.NEXT_PUBLIC_API_URL;
-	const response = await axios.get(`${backendUrl}/api/custom-auth/session`, {
-			withCredentials: true,
-	});
-	console.log("Backend session response:", response.data);
     
 	if (
 		sessionCookie &&
