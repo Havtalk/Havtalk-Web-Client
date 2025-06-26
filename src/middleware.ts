@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
+import { cookies } from 'next/headers'
 import axios from "axios";
 // import { useSession } from "./lib/auth";
 
@@ -7,6 +8,10 @@ const protectedPrefixes = ["/dashboard", "/characters", "/personas", "/profile",
 const adminRoutes = ["/admin", "/admin/:path*"]; 
 export async function middleware(request: NextRequest) {
 	console.log("Middleware triggered for request:", request);
+	const cookieHeader = request.headers.get("cookie") || "";
+	console.log("Cookie Header:", cookieHeader);
+	const cookieStore = await cookies();
+	console.log("Cookie Store:", cookieStore.getAll());
 	const sessionCookie = getSessionCookie(request);
 	console.log("Session Cookie:", sessionCookie);
 	const url = request.nextUrl;
