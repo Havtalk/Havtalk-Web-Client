@@ -1,120 +1,88 @@
-# HavTalk - Telegram Bot SaaS Landing Page
+<div align="center">
+  <img src="public/logo.png" alt="HavTalk Logo" width="120" height="120">
+  
+  # **HavTalk**
+  
+  *"Talk to Legends. Shape the Story."*
+</div>
+  
+HavTalk is an immersive roleplay platform where users can chat with lifelike characters, experience dynamic storylines, and explore AI-driven conversations that adapt to their choices.
 
-A modern, unique SaaS landing page for a Telegram bot built with Next.js 14, TypeScript, and shadcn/ui components.
+This is the **frontend** of the platform, built using Next.js and designed for a fast, responsive, and engaging experience.
 
-## Features
+Check out the backend repository that powers all the AI conversations and data management:
 
-This landing page features a Neo-Brutalist design style with:
+🔗 **Backend Repository:** [HavTalk Server](https://github.com/sohamhaldar/havtalk-backend)
 
-- **Responsive Design**: Mobile-first approach with breakpoints for all device sizes
-- **Modern Design Elements**:
-  - Bold typography and geometric shapes
-  - Gradient color scheme that transitions on scroll
-  - Custom cursor effect that interacts with UI elements
-  - Subtle parallax scrolling effects
-  - Micro-interactions and animations throughout
+---
 
-### Core Components
+## 🌐 Live Demo
 
-- **Header** with animated logo transition, navigation, and CTA button
-- **Hero Section** with 3D mockup of the Telegram bot
-- **Features Section** with interactive cards that reveal details on hover
-- **Pricing Tiers** with toggle between monthly/yearly billing
-- **Testimonials Carousel** with confetti animation on scroll
-- **FAQ Accordion** with custom animations
-- **Call-to-Action Section** with floating elements
-- **Footer** with links, social media, and newsletter signup
+👉 [https://www.havtalk.site](https://www.havtalk.site)
 
-### Technical Implementation
+---
 
-- **Theming**: Dark and light mode support with shadcn/ui
-- **Custom Animations**: Implemented with CSS variables and keyframes
-- **Performance Optimized**: Next.js Image component and code splitting
-- **Type Safety**: TypeScript interfaces for all component props
-- **Custom Hooks**: Animation and theme management
-- **Atomic Design**: Structured component hierarchy
+## ✨ Features
 
-### Extras
+- 🧠 Chat with fictional or historical characters
+- 👤 Create and chat as unique personas, each with their own perspective and voice
+- ✨ Generate AI-powered avatars for characters and personas
+- 🛡️ Seamless login and session management
+- 💬 Real-time and persistent chat sessions
+- 📱 Fully responsive and mobile-friendly UI
+- 🎭 Dynamic character personalities that adapt to conversations
+- 📚 Rich character backstories and contextual awareness
+- 🌟 Community-driven character creation and sharing
 
-- **Chat Demo Widget**: Mimics the Telegram bot functionality
-- **Easter Egg**: Trigger a special animation by typing "havtalk"
-- **Custom Cursor**: Unique cursor that reacts to interactive elements
+---
 
-## Getting Started
+<!-- ## 🎯 Use Cases
 
-### Prerequisites
+- 📖 **Educational Roleplay** - Learn history by talking to historical figures
+- 🎬 **Creative Writing** - Develop characters and storylines through interactive dialogue
+- 🎮 **Entertainment** - Engage in immersive conversations with your favorite fictional characters
+- 🧠 **Personal Development** - Practice conversations and social scenarios
+- 🎭 **Character Development** - Test and refine character personalities for your projects
 
-- Node.js (version 14.x or higher)
-- npm or yarn
+--- -->
+## 📦 Tech Stack
 
-### Installation
+- Next.js 14 (App Router)
+- TypeScript
+- Tailwind CSS
+- Axios
+- Better Auth (for secure authentication)
 
-1. Clone the repository:
+---
+
+## 🔮 Roadmap
+
+- [ ] Voice chat integration for more immersive conversations
+- [ ] Group chat scenarios with multiple characters
+- [ ] Advanced character customization tools
+- [ ] Community marketplace for sharing characters
+- [ ] Mobile app for iOS and Android
+---
+
+
+
+<!-- ## 📁 Folder Overview
 
 ```bash
-git clone https://github.com/yourusername/havtalk.git
-cd havtalk
+/app            # App Router structure
+/components     # UI components
+/lib            # API logic, utils
+/styles         # Tailwind/global styles
 ```
 
-2. Install dependencies:
+--- -->
 
-```bash
-npm install
-# or
-yarn
-```
+## 📄 License
 
-3. Run the development server:
+[MIT License](LICENSE)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+---
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+## 👤 Author
 
-## Project Structure
-
-```
-src/
-├── app/             # Next.js App Router
-├── components/      # React components
-│   ├── ui/          # UI components from shadcn/ui
-│   └── ...          # Custom components
-├── lib/             # Utility functions
-└── ...
-```
-
-## Customization
-
-### Colors
-
-The color scheme is defined in `src/app/globals.css` with CSS variables. You can modify the Neo-Brutalist color palette there.
-
-### Typography
-
-The project uses the following fonts:
-- **Rubik**: For display text (headings)
-- **Jost**: For body text
-- **Geist Sans**: For UI elements
-- **Geist Mono**: For monospace text
-
-### Animations
-
-Custom animations are defined in `src/app/globals.css` and used throughout the components.
-
-## Easter Egg
-
-Type "havtalk" anywhere on the page to trigger a special animation.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgements
-
-- [Next.js](https://nextjs.org/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Lucide Icons](https://lucide.dev/)
+Made with ❤️ by [Soham Haldar](https://github.com/sohamhaldar)
