@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
-import { cookies } from 'next/headers'
+// import { cookies } from 'next/headers'
 import axios from "axios";
 // import { useSession } from "./lib/auth";
 
