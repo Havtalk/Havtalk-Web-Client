@@ -33,9 +33,93 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
-  title: "HavTalk - Telegram Bot",
-  description: "A modern, powerful Telegram bot solution",
-  keywords: ["telegram", "bot", "messaging", "automation", "chat"],
+  title: {
+    default: "HavTalk - AI Roleplay Platform | Chat with Legendary Characters",
+    template: "%s | HavTalk"
+  },
+  description: "Immersive AI roleplay platform where you can chat with legendary characters, create unique personas, and experience dynamic storylines. Talk to historical figures, fictional characters, and more.",
+  keywords: [
+    "AI roleplay",
+    "character chat",
+    "AI conversation",
+    "roleplay platform",
+    "AI characters",
+    "interactive storytelling",
+    "AI chat bot",
+    "virtual characters",
+    "AI companions",
+    "text-based roleplay"
+  ],
+  authors: [{ name: "Soham Haldar", url: "https://github.com/sohamhaldar" }],
+  creator: "Soham Haldar",
+  publisher: "HavTalk",
+  category: "Entertainment",
+  metadataBase: new URL('https://www.havtalk.site'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://www.havtalk.site',
+    siteName: 'HavTalk',
+    title: 'HavTalk - AI Roleplay Platform | Chat with Legendary Characters',
+    description: 'Immersive AI roleplay platform where you can chat with legendary characters, create unique personas, and experience dynamic storylines.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'HavTalk - AI Roleplay Platform',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@havtalk',
+    creator: '@sohamhaldar',
+    title: 'HavTalk - AI Roleplay Platform | Chat with Legendary Characters',
+    description: 'Immersive AI roleplay platform where you can chat with legendary characters, create unique personas, and experience dynamic storylines.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+    yahoo: 'your-yahoo-verification-code',
+  },
+  manifest: '/manifest.json',
+  icons: {
+    icon: [
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    other: [
+      {
+        rel: 'mask-icon',
+        url: '/safari-pinned-tab.svg',
+        color: '#5bbad5',
+      },
+    ],
+  },
+  other: {
+    'theme-color': '#000000',
+    'msapplication-TileColor': '#000000',
+    'msapplication-config': '/browserconfig.xml',
+  },
 };
 
 export default function RootLayout({
@@ -44,7 +128,42 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "HavTalk",
+              "description": "Immersive AI roleplay platform where you can chat with legendary characters, create unique personas, and experience dynamic storylines.",
+              "url": "https://www.havtalk.site",
+              "applicationCategory": "GameApplication",
+              "operatingSystem": "Web Browser",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "creator": {
+                "@type": "Person",
+                "name": "Soham Haldar",
+                "url": "https://github.com/sohamhaldar"
+              },
+              "featureList": [
+                "AI-powered character conversations",
+                "Custom persona creation",
+                "Dynamic storytelling",
+                "Character avatar generation",
+                "Real-time chat sessions"
+              ]
+            })
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${rubik.variable} ${jost.variable} min-h-screen bg-background font-sans antialiased scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-thumb-gray-800/60`}
       >

@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Main pages
+Allow: /characters
+Allow: /legal
+Allow: /auth/login
+Allow: /auth/register
+
+# Disallow admin and private routes
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /static/
+
+# Guest chat pages are allowed for indexing
+Allow: /guest-chat/
+
+# Sitemap location
+Sitemap: https://www.havtalk.site/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

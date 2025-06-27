@@ -1,6 +1,29 @@
 import React from "react";
 import { Header } from "@/components/landing-header";
 import { LandingFooter } from "@/components/landing-footer";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy & Terms - HavTalk | Legal Information",
+  description: "Read HavTalk's privacy policy and terms of service. Learn about data protection, user rights, and service guidelines for our AI roleplay platform.",
+  keywords: [
+    "privacy policy",
+    "terms of service",
+    "legal",
+    "data protection",
+    "user rights",
+    "GDPR compliance",
+    "service terms"
+  ],
+  openGraph: {
+    title: "Privacy Policy & Terms - HavTalk",
+    description: "Privacy policy and terms of service for HavTalk AI roleplay platform",
+    url: "https://www.havtalk.site/legal"
+  },
+  alternates: {
+    canonical: "https://www.havtalk.site/legal"
+  }
+};
 
 export default function LegalPage() {
   return (

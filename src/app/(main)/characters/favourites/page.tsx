@@ -102,6 +102,7 @@ export default function AllCharacters() {
                       isFavorite={favorites.includes(character.id)}
                       isFavouritePage={true}
                       handleFavoriteRemoved={handleFavoriteRemoved}
+                      isOwner={character.owner?.id === character.userId} // Check if the user is the owner of the character
                   />
                 ))
               )}

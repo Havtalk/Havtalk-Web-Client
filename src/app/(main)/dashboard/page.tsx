@@ -407,6 +407,7 @@ export default function Dashboard() {
                       key={character.id} 
                       character={character} 
                       isFavorite={favorites.includes(character.id)}
+                      isOwner={false}
                     />
                   ))}
                 </div>

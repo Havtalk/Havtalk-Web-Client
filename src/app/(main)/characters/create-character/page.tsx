@@ -15,6 +15,7 @@ import { Loader2 } from "lucide-react";
 import { base64ToFile } from "@/lib/utils";
 import api from "@/lib/axiosInstance";
 import BackgroundDesign from "@/components/background-design";
+import Head from 'next/head';
 
 interface CharacterFormData {
   name: string;
@@ -409,8 +410,57 @@ export default function CreateCharacterPage() {
     }
   ];
 
-  return (<><BackgroundDesign/>
-    <div className="h-full w-full flex justify-center py-10 overflow-y-auto px-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-thumb-gray-800">
+  return (
+    <>
+      <Head>
+        <title>Create Character - HavTalk | Build Your AI Roleplay Character</title>
+        <meta 
+          name="description" 
+          content="Create your own AI roleplay character with our advanced character builder. Design personalities, backgrounds, and unique traits for immersive conversations." 
+        />
+        <meta 
+          name="keywords" 
+          content="create AI character, character builder, AI roleplay, character creation, custom characters, AI personality" 
+        />
+        <link rel="canonical" href="https://www.havtalk.site/characters/create-character" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebPage",
+              "name": "Create AI Character",
+              "description": "Build and customize your own AI roleplay character",
+              "url": "https://www.havtalk.site/characters/create-character",
+              "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://www.havtalk.site"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Characters",
+                    "item": "https://www.havtalk.site/characters"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Create Character",
+                    "item": "https://www.havtalk.site/characters/create-character"
+                  }
+                ]
+              }
+            })
+          }}
+        />
+      </Head>
+      <BackgroundDesign/>
+      <div className="h-full w-full flex justify-center py-10 overflow-y-auto px-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-thumb-gray-800">
       
       <Card className="border-none shadow-md w-full max-w-4xl min-h-fit backdrop-blur-sm bg-white/10">
         <CardHeader>
