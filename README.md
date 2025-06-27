@@ -12,7 +12,7 @@ This is the **frontend** of the platform, built using Next.js and designed for a
 
 Check out the backend repository that powers all the AI conversations and data management:
 
-🔗 **Backend Repository:** [HavTalk Server](https://github.com/sohamhaldar/havtalk-backend)
+🔗 **Backend Repository:** [HavTalk Server](https://github.com/Havtalk/Havtalk-Server)
 
 ---
 
