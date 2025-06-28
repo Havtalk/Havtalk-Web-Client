@@ -135,13 +135,26 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: JSON.stringify(
+              [{
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "HavTalk - AI Roleplay",
+                "alternateName": "HavTalk",
+                "url": "https://www.havtalk.site",
+                "logo": "https://www.havtalk.site/logo.png",
+                "image": "https://www.havtalk.site/og-image.png",
+                "description": "AI roleplay platform where you can chat with legendary characters, create unique personas, and experience dynamic storylines.",
+              },
+              {
               "@context": "https://schema.org",
               "@type": "WebApplication",
               "name": "HavTalk",
               "description": "Immersive AI roleplay platform where you can chat with legendary characters, create unique personas, and experience dynamic storylines.",
               "url": "https://www.havtalk.site",
-              "applicationCategory": "GameApplication",
+              "applicationCategory": "WebApplication",
+              "logo": "https://www.havtalk.site/logo.png",
+              "image": "https://www.havtalk.site/og-image.png",
               "operatingSystem": "Web Browser",
               "offers": {
                 "@type": "Offer",
@@ -160,7 +173,7 @@ export default function RootLayout({
                 "Character avatar generation",
                 "Real-time chat sessions"
               ]
-            })
+            }])
           }}
         />
       </head>
