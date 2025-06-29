@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-import { BaseUrl } from "@/lib/utils";
+// import axios from "axios";
+// import { BaseUrl } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 
@@ -12,6 +12,7 @@ import { Plus} from "lucide-react";
 import PersonaCard from "@/components/persona-card";
 import BackgroundDesign from "@/components/background-design";
 import { PersonaCardSkeleton } from "@/components/skeletons/persona-card-skeleton";
+import api from "@/lib/axiosInstance";
 
 interface Persona {
   id: string;
@@ -83,8 +84,8 @@ export default function PersonasPage() {
   const fetchUserDetails = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get<UserDetailsResponse>(
-        `${BaseUrl}/user/user-details`,
+      const response = await api.get<UserDetailsResponse>(
+        `/user/user-details`,
         { withCredentials: true }
       );
 
@@ -111,7 +112,7 @@ export default function PersonasPage() {
       // Use the passed ID or fall back to the state value
       const activePersonaId = currentId !== null ? currentId : currentPersonaId;
       
-      const response = await axios.get(`${BaseUrl}/persona`, {
+      const response = await api.get(`/persona`, {
         withCredentials: true,
       });
       let fetchedPersonas = response.data.personas || [];

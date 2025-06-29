@@ -7,8 +7,8 @@ import Link from "next/link";
 import CharacterCard from "@/components/character-card";
 import Carousel3 from "@/components/carousel3";
 import PersonaCard from "@/components/persona-card";
-import axios from "axios";
-import { BaseUrl } from "@/lib/utils";
+// import axios from "axios";
+// import { BaseUrl } from "@/lib/utils";
 import api from "@/lib/axiosInstance";
 import { CharacterCardSkeleton } from "@/components/skeletons/character-card-skeleton";
 import { PersonaCardSkeleton } from "@/components/skeletons/persona-card-skeleton";
@@ -237,7 +237,7 @@ export default function Dashboard() {
         }
         
         // Then fetch all personas
-        const personasResponse = await axios.get(`${BaseUrl}/persona`, { 
+        const personasResponse = await api.get(`/persona`, { 
           withCredentials: true 
         });
         

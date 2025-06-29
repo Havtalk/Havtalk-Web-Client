@@ -15,9 +15,9 @@ import {
 // import Image from 'next/image';
 import React, { useState, useRef, useEffect } from 'react'
 import { PencilIcon, MailIcon, UserIcon, KeyIcon, AsteriskIcon, LockIcon, EyeIcon, EyeOffIcon, BrainIcon, UploadIcon, Loader2Icon } from 'lucide-react';
-import axios from 'axios';
+// import axios from 'axios';
 import { toast } from 'sonner';
-import { BaseUrl } from '@/lib/utils';
+// import { BaseUrl } from '@/lib/utils';
 import { changePassword } from '@/lib/auth';
 import api from '@/lib/axiosInstance';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -74,8 +74,8 @@ function ProfilePage() {
     const fetchUserData = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get<UserDetailsResponse>(
-          `${BaseUrl}/user/user-details`,
+        const response = await api.get<UserDetailsResponse>(
+          `/user/user-details`,
           { withCredentials: true } // This ensures cookies are sent with the request
         );
         

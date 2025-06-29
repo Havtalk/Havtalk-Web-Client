@@ -1,11 +1,12 @@
 'use client';
 
 import CharacterCard from '@/components/character-card';
-import { BaseUrl } from '@/lib/utils';
+// import { BaseUrl } from '@/lib/utils';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import BackgroundDesign from '@/components/background-design';
 import { CharacterCardSkeleton } from '@/components/skeletons/character-card-skeleton';
+import api from '@/lib/axiosInstance';
 
 // Define proper interfaces for type safety
 interface Character {
@@ -50,8 +51,8 @@ export default function AllCharacters() {
       try {
         // Fetch characters and favorites in parallel
         const [charactersResponse, favoritesResponse] = await Promise.all([
-          axios.get(`${BaseUrl}/character/public`),
-          axios.get(`${BaseUrl}/user/favorites`, { withCredentials: true }).catch(() => ({ data: { data: [] } }))
+          api.get(`/character/public`),
+          api.get(`/user/favorites`, { withCredentials: true }).catch(() => ({ data: { data: [] } }))
         ]);
         
         // Extract favorite character IDs from response

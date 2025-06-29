@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Inbox, Plus } from 'lucide-react';
 import BackgroundDesign from '@/components/background-design';
 import { CharacterCardSkeleton } from '@/components/skeletons/character-card-skeleton';
+import api from '@/lib/axiosInstance';
 
 // Define proper interfaces for type safety
 interface Character {
@@ -40,8 +41,8 @@ function MyCharacters() {
     const fetchData = async () => {
       try {
         const [charactersResponse, favoritesResponse] = await Promise.all([
-          axios.get(`${BaseUrl}/character`, { withCredentials: true }),
-          axios.get(`${BaseUrl}/user/favorites`, { withCredentials: true })
+          api.get(`/character`, { withCredentials: true }),
+          api.get(`/user/favorites`, { withCredentials: true })
         ]);
         
         setCharacters(charactersResponse.data.characters || []);
