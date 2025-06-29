@@ -1,8 +1,8 @@
 'use client';
 import CharacterCard from '@/components/character-card';
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { BaseUrl } from '@/lib/utils';
+// import axios from 'axios';
+// import { BaseUrl } from '@/lib/utils';
 import Link from 'next/link';
 import { Inbox, Plus } from 'lucide-react';
 import BackgroundDesign from '@/components/background-design';
