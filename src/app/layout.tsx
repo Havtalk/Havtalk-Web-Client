@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/auth-context";
 import SessionExpiredModal from "@/components/session-expired-modal";
 import { Toaster } from "@/components/ui/sonner";
 import LoaderProvider from "@/context/loader-provider";
+import { Analytics } from "@vercel/analytics/next"
 
 
 const geistSans = Geist({
@@ -203,6 +204,7 @@ export default function RootLayout({
           <AuthProvider>
             <PersonaProvider>
               {children}
+              <Analytics />
               <SessionExpiredModal />
               <Toaster/>
             </PersonaProvider>
